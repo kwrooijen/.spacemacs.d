@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: and
+# key: and
+# binding: direct-keybinding
+# --
+(and $0)

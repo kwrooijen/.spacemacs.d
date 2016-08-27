@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: la
+# key: la
+# binding: direct-keybinding
+# --
+(lambda ($1) $2)$0

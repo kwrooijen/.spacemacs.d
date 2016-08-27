@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: car
+# key: car
+# binding: direct-keybinding
+# --
+(car $0)

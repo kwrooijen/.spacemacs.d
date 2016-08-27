@@ -24,11 +24,14 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
-     dash
+     (dash :variables
+           dash-helm-dash-docset-path "~/.docsets")
      elixir
      elm
      emacs-lisp
      erc
+     dockerfile
+     git
      eyebrowse
      git
      markdown
@@ -38,16 +41,16 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
-            shell-default-shell 'eshell)
+            shell-default-shell 'eshell
+            shell-protect-eshell-prompt t)
      ;; spell-checking
      ;; syntax-checking
-     version-control
-     )
+     version-control)
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(key-chord)
+   dotspacemacs-additional-packages '(key-chord scss-mode)
    ;; A LIST of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -247,7 +250,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq dash-helm-dash-docset-path "~/.docsets"))
+  )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -257,9 +260,52 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  (defmacro add-hook* (mode fn)
+    `(add-hook ,mode (lambda () ,fn)))
+
   (defmacro ensure-clone (user project branch)
     (unless (file-exists-p (format "~/.spacemacs.d/%s" project))
       (shell-command (format "cd ~/.spacemacs.d && git clone -b %s git@github.com:%s/%s" branch user project))))
+
+  (defun capitalize-previous-word ()
+    (interactive)
+    (save-excursion
+      (backward-word)
+      (capitalize-word 1)))
+
+  (defun eww-other-window (url)
+    (interactive)
+    (view-buffer-other-window "*DocBuffer*")
+    (eww url))
+
+  (defun evil-normal-state-and-save ()
+    (interactive)
+    (evil-normal-state)
+    (save-buffer))
+
+  (setq diff-hl-side 'left
+        git-gutter-fr+-side 'left-fringe
+        x-select-enable-clipboard nil
+        projectile-use-git-grep t
+        scroll-error-top-bottom t
+        helm-dash-browser-func 'eww-other-window
+        helm-dash-docsets-path "~/.docsets"
+        alchemist-test--mode-name-face nil
+        helm-make-named-buffer t)
+
+  (bind-key* "C-S-V" 'x-clipboard-yank)
+  (bind-key* "C-S-C" 'clipboard-kill-ring-save)
+  (bind-key* "M-+" 'align-regexp)
+  (bind-key* "M-C" 'capitalize-previous-word)
+  (bind-key* "M-1" 'select-window-1)
+  (bind-key* "M-2" 'select-window-2)
+  (bind-key* "M-3" 'select-window-3)
+  (bind-key* "M-4" 'select-window-4)
+  (bind-key* "M-5" 'select-window-5)
+  (bind-key* "M-6" 'select-window-6)
+  (bind-key* "M-7" 'select-window-7)
+  (bind-key* "M-8" 'select-window-8)
+  (bind-key* "M-9" 'select-window-9)
 
   (use-package multiple-cursors
     :load-path "~/.spacemacs.d/multiple-cursors.el/"
@@ -272,27 +318,6 @@ you should place your code here."
     :config
     (multiple-cursors-mode t))
 
-  (defun eww-other-window (url)
-    (interactive)
-    (view-buffer-other-window (current-buffer))
-    (eww url))
-
-  (setq diff-hl-side 'left
-        git-gutter-fr+-side 'left-fringe
-        x-select-enable-clipboard nil
-        projectile-use-git-grep t
-        scroll-error-top-bottom t
-        helm-dash-browser-func 'eww-other-window
-        helm-dash-docsets-path "~/.docsets")
-
-  (defmacro add-hook* (mode fn)
-    `(add-hook ,mode (lambda () ,fn)))
-
-  (defun evil-normal-state-and-save ()
-    (interactive)
-    (evil-normal-state)
-    (save-buffer))
-
   (use-package erc
     :bind (:map erc-mode-map
                 ("C-M-m" . erc-send-current-line)
@@ -303,15 +328,20 @@ you should place your code here."
      erc-scrolltobottom-mode t
      erc-hide-list '("JOIN" "PART" "QUIT"))
     :init
+    (defadvice attic/erc (after attic-ad/attic/erc-after activate)
+      (setq erc-password nil))
+    (defun attic/erc ()
+      (interactive)
+      (load "~/.erc.gpg")
+      (erc :server "irc.freenode.net"
+           :port 6667
+           :nick erc-nick
+           :password erc-password))
     (defun erc-no-return ()
       (interactive)
       (message "Use C-M-m to send")))
 
-  (global-git-gutter+-mode)
-  (bind-key* "C-S-V" 'x-clipboard-yank)
-  (bind-key* "C-S-C" 'clipboard-kill-ring-save)
-  (bind-key* "C-/" 'evilnc-comment-or-uncomment-lines)
-  (bind-key* "M-m" 'back-to-indentation)
+  (spacemacs/toggle-mode-line-minor-modes-off)
 
   (evil-leader/set-key
     "1" 'eyebrowse-switch-to-window-config-1
@@ -342,11 +372,23 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+ '(elm-format-on-save t)
+ '(elm-indent-offset 4)
+ '(evil-want-Y-yank-to-eol t)
+ '(helm-make-comint t)
+ '(nyan-bar-length 14)
+ '(nyan-mode t)
+ '(paradox-github-token t)
  '(quote (paradox-github-token t)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(alchemist-test--failed-face ((t (:inherit font-lock-variable-name-face :foreground "tomato" :weight bold))))
+ '(alchemist-test--success-face ((t (:inherit font-lock-variable-name-face :foreground "green" :weight bold))))
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))

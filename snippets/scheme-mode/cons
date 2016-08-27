@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: cons
+# key: cons
+# binding: direct-keybinding
+# --
+(cons $0)

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: d
+# key: d
+# binding: direct-keybinding
+# --
+(define $0)

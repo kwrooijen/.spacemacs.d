@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: cdr
+# key: cdr
+# binding: direct-keybinding
+# --
+(cdr $0)
