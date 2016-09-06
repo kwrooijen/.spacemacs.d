@@ -32,10 +32,13 @@ values."
      erc
      dockerfile
      git
+     syntax-checking
      eyebrowse
+     yaml
      git
      markdown
      org
+     ranger
      rust
      scheme
      (shell :variables
@@ -50,7 +53,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(key-chord scss-mode)
+   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode)
    ;; A LIST of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -116,7 +119,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Monospace Bold"
+   dotspacemacs-default-font '("Fira Mono"
                                :size 11
                                :weight bold
                                :width normal
@@ -283,15 +286,25 @@ you should place your code here."
     (evil-normal-state)
     (save-buffer))
 
-  (setq diff-hl-side 'left
-        git-gutter-fr+-side 'left-fringe
-        x-select-enable-clipboard nil
+  (setq indent-buffer-modes '(scss-mode))
+
+  (defun indent-buffer-on-save ()
+    (if (member major-mode indent-buffer-modes)
+        (spacemacs/indent-region-or-buffer)))
+
+  (setq x-select-enable-clipboard nil
         projectile-use-git-grep t
         scroll-error-top-bottom t
         helm-dash-browser-func 'eww-other-window
         helm-dash-docsets-path "~/.docsets"
         alchemist-test--mode-name-face nil
         helm-make-named-buffer t)
+
+  (setq twittering-icon-mode t
+        ;; Use master password for twitter instead of authenticating every time
+        twittering-cert-file "/etc/ssl/certs/ca-bundle.crt"
+        twittering-use-master-password t
+        twittering-convert-fix-size 24)
 
   (bind-key* "C-S-V" 'x-clipboard-yank)
   (bind-key* "C-S-C" 'clipboard-kill-ring-save)
@@ -306,6 +319,8 @@ you should place your code here."
   (bind-key* "M-7" 'select-window-7)
   (bind-key* "M-8" 'select-window-8)
   (bind-key* "M-9" 'select-window-9)
+
+  (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
 
   (use-package multiple-cursors
     :load-path "~/.spacemacs.d/multiple-cursors.el/"
@@ -354,6 +369,7 @@ you should place your code here."
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9)
 
+  (add-hook* 'twittering-mode-hook (setq-local mode-line-format nil))
   (add-hook* 'clojure-mode-hook (setq-local helm-dash-docsets '("Clojure")))
   (add-hook* 'elixir-mode-hook (setq-local helm-dash-docsets '("Elixir")))
   (add-hook* 'emacs-lisp-mode-hook (setq-local helm-dash-docsets '("Emacs Lisp")))
@@ -363,6 +379,7 @@ you should place your code here."
   (add-hook* 'rust-mode-hook (setq-local helm-dash-docsets '("Rust")))
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
+  (add-hook* 'after-save-hook (indent-buffer-on-save))
   (key-chord-define-global "xs" 'evil-normal-state-and-save))
 
 ;; Do not write anything past this comment. This is where Emacs will
