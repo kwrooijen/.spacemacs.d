@@ -348,7 +348,6 @@ you should place your code here."
 
   (use-package neotree
     :config
-
     (defun neotree-find-project-root-no-jump ()
       (interactive)
       (let ((c (current-buffer))
@@ -356,11 +355,13 @@ you should place your code here."
         (neotree-find (projectile-project-root))
         (neotree-find origin-buffer-file-name)
         (hl-line-mode 1)
-        (switch-to-buffer c)))
+        (switch-to-buffer c)
+        (setq default-directory (file-name-directory buffer-file-name))))
 
     (defadvice helm-projectile-find-file (after helm-projectile-find-file activate)
-      (progn
-      (neotree-find-project-root-no-jump))))
+      (neotree-find-project-root-no-jump))
+    (defadvice helm-projectile-switch-project (after helm-projectile-switch-project activate)
+      (neotree-find-project-root-no-jump)))
 
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
