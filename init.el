@@ -42,7 +42,7 @@ values."
      rust
      scheme
      (shell :variables
-            shell-default-height 30
+            shell-default-height 20
             shell-default-position 'bottom
             shell-default-shell 'eshell
             shell-protect-eshell-prompt t)
@@ -219,7 +219,7 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
@@ -243,8 +243,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'all
-   ))
+   dotspacemacs-whitespace-cleanup 'all))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -301,7 +300,8 @@ you should place your code here."
         helm-dash-browser-func 'eww-other-window
         helm-dash-docsets-path "~/.docsets"
         alchemist-test--mode-name-face nil
-        helm-make-named-buffer t)
+        helm-make-named-buffer t
+        linum-format (quote "%4d "))
 
   (setq twittering-icon-mode t
         ;; Use master password for twitter instead of authenticating every time
@@ -346,6 +346,22 @@ you should place your code here."
     :config
     (multiple-cursors-mode t))
 
+  (use-package neotree
+    :config
+
+    (defun neotree-find-project-root-no-jump ()
+      (interactive)
+      (let ((c (current-buffer))
+            (origin-buffer-file-name (buffer-file-name)))
+        (neotree-find (projectile-project-root))
+        (neotree-find origin-buffer-file-name)
+        (hl-line-mode 1)
+        (switch-to-buffer c)))
+
+    (defadvice helm-projectile-find-file (after helm-projectile-find-file activate)
+      (progn
+      (neotree-find-project-root-no-jump))))
+
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
     :config
@@ -370,18 +386,13 @@ you should place your code here."
     :init
     (ensure-clone "hlissner" "emacs-doom-theme" "master"))
 
-  (use-package linum
-    :init
-    (setq linum-format (quote "%4d ")
-          linum-disabled-modes-list '(mu4e-compose-mode
-                                      mu4e-headers-mode
-                                      mu4e-main-mode)))
-
   (use-package hlinum
     :ensure t
     :config
-    (set-face-background 'linum-highlight-face nil)
-    (set-face-foreground 'linum-highlight-face "DodgerBlue")
+    (set-face-attribute 'linum-highlight-face nil
+                        :inherit 'hl-line-face
+                        :background nil
+                        :foreground "DodgerBlue")
     (hlinum-activate))
 
   (use-package fringe
@@ -390,9 +401,15 @@ you should place your code here."
     (set-fringe-mode '1)
     (add-hook 'prog-mode-hook 'linum-mode)
     (advice-add 'neo-global--select-window :after (lambda ()
+                                                    (setq cursor-in-non-selected-windows nil)
                                                     (set-window-fringes neo-global--window 1 0)
                                                     (spacemacs/toggle-mode-line-off)))
 
+    (defun small-fringe ()
+      (if (not (active-minibuffer-window))
+          (set-window-fringes (selected-window) 2 0 t)))
+
+    (add-hook 'buffer-list-update-hook 'small-fringe)
     (set-face-foreground 'git-gutter-fr+-added "green")
     (set-face-background 'git-gutter-fr+-added "green")
     (set-face-foreground 'git-gutter-fr+-modified "yellow")
@@ -437,6 +454,11 @@ you should place your code here."
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9)
 
+  (defun my/helm-exit-minibuffer ()
+    (interactive)
+    (helm-exit-minibuffer))
+  (evil-define-key 'normal helm-map (kbd "<RET>") 'my/helm-exit-minibuffer)
+
   (add-hook* 'twittering-mode-hook (setq-local mode-line-format nil))
   (add-hook* 'clojure-mode-hook (setq-local helm-dash-docsets '("Clojure")))
   (add-hook* 'elixir-mode-hook (setq-local helm-dash-docsets '("Elixir")))
@@ -468,6 +490,7 @@ you should place your code here."
  '(helm-make-comint t)
  '(neo-enter-hook (quote (ignore)))
  '(neo-persist-show t)
+ '(neo-show-hidden-files nil)
  '(neo-theme (quote ascii))
  '(nyan-bar-length 14)
  '(nyan-mode t)
