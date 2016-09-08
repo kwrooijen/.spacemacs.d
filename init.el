@@ -53,7 +53,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode)
+   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen)
    ;; A LIST of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -263,6 +263,45 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+
+  (setq fringes-outside-margins t)
+  (defmacro add-hook! (hook &rest func-or-forms)
+    "A convenience macro for `add-hook'.
+HOOK can be one hook or a list of hooks. If the hook(s) are not quoted, -hook is
+appended to them automatically. If they are quoted, they are used verbatim.
+FUNC-OR-FORMS can be a quoted symbol, a list of quoted symbols, or forms. Forms will be
+wrapped in a lambda. A list of symbols will expand into a series of add-hook calls.
+Examples:
+    (add-hook! 'some-mode-hook 'enable-something)
+    (add-hook! some-mode '(enable-something and-another))
+    (add-hook! '(one-mode-hook second-mode-hook) 'enable-something)
+    (add-hook! (one-mode second-mode) 'enable-something)
+    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))"
+    (declare (indent defun) (debug t))
+    (unless func-or-forms
+      (error "add-hook!: FUNC-OR-FORMS is empty"))
+    (let* ((val (car func-or-forms))
+           (quoted (eq (car-safe hook) 'quote))
+           (hook (if quoted (cadr hook) hook))
+           (funcs (if (eq (car-safe val) 'quote)
+                      (if (cdr-safe (cadr val))
+                          (cadr val)
+                        (list (cadr val)))
+                    (list func-or-forms)))
+           (forms '()))
+      (mapc
+       (lambda (f)
+         (let ((func (cond ((symbolp f) `(quote ,f))
+                           (t `(lambda (&rest _) ,@func-or-forms)))))
+           (mapc
+            (lambda (h)
+              (push `(add-hook ',(if quoted h (intern (format "%s-hook" h))) ,func) forms))
+            (-list hook)))) funcs)
+      `(progn ,@forms)))
+
+  (add-hook! (emacs-startup minibuffer-setup neotree-mode-hook)
+             (set-window-fringes (minibuffer-window) 0 0 nil))
+
   (defmacro add-hook* (mode fn)
     `(add-hook ,mode (lambda () ,fn)))
 
@@ -286,7 +325,10 @@ you should place your code here."
     (evil-normal-state)
     (save-buffer))
 
-  (setq indent-buffer-modes '(scss-mode))
+  (setq diff-hl-side 'left
+        git-gutter-fr+-side 'left-fringe
+        x-select-enable-clipboard nil
+        indent-buffer-modes '(scss-mode))
 
   (defun indent-buffer-on-save ()
     (if (member major-mode indent-buffer-modes)
@@ -333,6 +375,50 @@ you should place your code here."
     :config
     (multiple-cursors-mode t))
 
+  (use-package doom-theme
+    :load-path "~/.spacemacs.d/emacs-doom-theme/"
+    :config
+    (load-file "~/.spacemacs.d/modeline.el")
+    (load-theme 'doom-one)
+    (set-face-attribute 'mode-line-inactive nil :box nil)
+    (set-face-attribute 'mode-line nil :box nil)
+
+    (defun doom*neo-insert-root-entry (node)
+      "Pretty-print pwd in neotree"
+      (list (concat "  " (projectile-project-name))))
+
+    (defun doom*neo-insert-fold-symbol (name)
+      "Custom hybrid unicode theme with leading whitespace."
+      (or (and (eq name 'open)  (neo-buffer--insert-with-face " -  " 'neo-expand-btn-face))
+          (and (eq name 'close) (neo-buffer--insert-with-face " +  " 'neo-expand-btn-face))
+          (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
+
+    (advice-add 'neo-buffer--insert-fold-symbol :override 'doom*neo-insert-fold-symbol)
+    (advice-add 'neo-buffer--insert-root-entry :filter-args 'doom*neo-insert-root-entry)
+    :init
+    (ensure-clone "hlissner" "emacs-doom-theme" "master"))
+
+  (use-package linum
+    :init
+    (setq linum-format (quote "%4d ")
+          linum-disabled-modes-list '(mu4e-compose-mode
+                                      mu4e-headers-mode
+                                      mu4e-main-mode)))
+  (use-package fringe
+    :config
+    ;; (set-fringe-mode '1)
+    (add-hook 'prog-mode-hook 'linum-mode)
+    (advice-add 'neo-global--select-window :after (lambda ()
+                                                    (set-window-fringes neo-global--window 1 0)
+                                                    (spacemacs/toggle-mode-line-off)))
+    (set-face-foreground 'git-gutter-fr+-added "green")
+    (set-face-background 'git-gutter-fr+-added "green")
+    (set-face-foreground 'git-gutter-fr+-modified "yellow")
+    (set-face-background 'git-gutter-fr+-modified "yellow")
+    (set-face-foreground 'git-gutter-fr+-deleted "red")
+    (set-face-background 'git-gutter-fr+-deleted "red")
+    (set-face-background 'fringe "#262c34"))
+
   (use-package erc
     :bind (:map erc-mode-map
                 ("C-M-m" . erc-send-current-line)
@@ -368,7 +454,8 @@ you should place your code here."
     "7" 'eyebrowse-switch-to-window-config-7
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9)
-
+  (neotree-toggle)
+  (select-window-1)
   (add-hook* 'twittering-mode-hook (setq-local mode-line-format nil))
   (add-hook* 'clojure-mode-hook (setq-local helm-dash-docsets '("Clojure")))
   (add-hook* 'elixir-mode-hook (setq-local helm-dash-docsets '("Elixir")))
@@ -391,11 +478,13 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+    ("e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(elm-format-on-save t)
- '(elm-indent-offset 4)
  '(evil-want-Y-yank-to-eol t)
  '(helm-make-comint t)
+ '(neo-enter-hook (quote (ignore)))
+ '(neo-persist-show t)
+ '(neo-theme (quote ascii))
  '(nyan-bar-length 14)
  '(nyan-mode t)
  '(paradox-github-token t)
