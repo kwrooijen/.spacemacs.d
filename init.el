@@ -53,9 +53,9 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen)
+   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum)
    ;; A LIST of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(vi-tilde-fringe)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -119,7 +119,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Fira Mono"
+   dotspacemacs-default-font '("Source Code Pro"
                                :size 11
                                :weight bold
                                :width normal
@@ -263,45 +263,6 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-
-  (setq fringes-outside-margins t)
-  (defmacro add-hook! (hook &rest func-or-forms)
-    "A convenience macro for `add-hook'.
-HOOK can be one hook or a list of hooks. If the hook(s) are not quoted, -hook is
-appended to them automatically. If they are quoted, they are used verbatim.
-FUNC-OR-FORMS can be a quoted symbol, a list of quoted symbols, or forms. Forms will be
-wrapped in a lambda. A list of symbols will expand into a series of add-hook calls.
-Examples:
-    (add-hook! 'some-mode-hook 'enable-something)
-    (add-hook! some-mode '(enable-something and-another))
-    (add-hook! '(one-mode-hook second-mode-hook) 'enable-something)
-    (add-hook! (one-mode second-mode) 'enable-something)
-    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))"
-    (declare (indent defun) (debug t))
-    (unless func-or-forms
-      (error "add-hook!: FUNC-OR-FORMS is empty"))
-    (let* ((val (car func-or-forms))
-           (quoted (eq (car-safe hook) 'quote))
-           (hook (if quoted (cadr hook) hook))
-           (funcs (if (eq (car-safe val) 'quote)
-                      (if (cdr-safe (cadr val))
-                          (cadr val)
-                        (list (cadr val)))
-                    (list func-or-forms)))
-           (forms '()))
-      (mapc
-       (lambda (f)
-         (let ((func (cond ((symbolp f) `(quote ,f))
-                           (t `(lambda (&rest _) ,@func-or-forms)))))
-           (mapc
-            (lambda (h)
-              (push `(add-hook ',(if quoted h (intern (format "%s-hook" h))) ,func) forms))
-            (-list hook)))) funcs)
-      `(progn ,@forms)))
-
-  (add-hook! (emacs-startup minibuffer-setup neotree-mode-hook)
-             (set-window-fringes (minibuffer-window) 0 0 nil))
-
   (defmacro add-hook* (mode fn)
     `(add-hook ,mode (lambda () ,fn)))
 
@@ -362,6 +323,16 @@ Examples:
   (bind-key* "M-8" 'select-window-8)
   (bind-key* "M-9" 'select-window-9)
 
+  (require 'magit)
+  (define-key magit-mode-map "\M-1" 'select-window-1)
+  (define-key magit-mode-map "\M-2" 'select-window-2)
+  (define-key magit-mode-map "\M-3" 'select-window-3)
+  (define-key magit-mode-map "\M-4" 'select-window-4)
+  (define-key magit-mode-map "\M-5" 'select-window-5)
+  (define-key magit-mode-map "\M-6" 'select-window-6)
+  (define-key magit-mode-map "\M-7" 'select-window-7)
+  (define-key magit-mode-map "\M-8" 'select-window-8)
+  (define-key magit-mode-map "\M-9" 'select-window-9)
   (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
 
   (use-package multiple-cursors
@@ -378,10 +349,8 @@ Examples:
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
     :config
+    (require 'f)
     (load-file "~/.spacemacs.d/modeline.el")
-    (load-theme 'doom-one)
-    (set-face-attribute 'mode-line-inactive nil :box nil)
-    (set-face-attribute 'mode-line nil :box nil)
 
     (defun doom*neo-insert-root-entry (node)
       "Pretty-print pwd in neotree"
@@ -395,6 +364,9 @@ Examples:
 
     (advice-add 'neo-buffer--insert-fold-symbol :override 'doom*neo-insert-fold-symbol)
     (advice-add 'neo-buffer--insert-root-entry :filter-args 'doom*neo-insert-root-entry)
+    (load-theme 'doom-one)
+    (set-face-attribute 'mode-line-inactive nil :box nil)
+    (set-face-attribute 'mode-line nil :box nil)
     :init
     (ensure-clone "hlissner" "emacs-doom-theme" "master"))
 
@@ -404,13 +376,23 @@ Examples:
           linum-disabled-modes-list '(mu4e-compose-mode
                                       mu4e-headers-mode
                                       mu4e-main-mode)))
+
+  (use-package hlinum
+    :ensure t
+    :config
+    (set-face-background 'linum-highlight-face nil)
+    (set-face-foreground 'linum-highlight-face "DodgerBlue")
+    (hlinum-activate))
+
   (use-package fringe
     :config
-    ;; (set-fringe-mode '1)
+    (setq-default fringes-outside-margins t)
+    (set-fringe-mode '1)
     (add-hook 'prog-mode-hook 'linum-mode)
     (advice-add 'neo-global--select-window :after (lambda ()
                                                     (set-window-fringes neo-global--window 1 0)
                                                     (spacemacs/toggle-mode-line-off)))
+
     (set-face-foreground 'git-gutter-fr+-added "green")
     (set-face-background 'git-gutter-fr+-added "green")
     (set-face-foreground 'git-gutter-fr+-modified "yellow")
@@ -454,8 +436,7 @@ Examples:
     "7" 'eyebrowse-switch-to-window-config-7
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9)
-  (neotree-toggle)
-  (select-window-1)
+
   (add-hook* 'twittering-mode-hook (setq-local mode-line-format nil))
   (add-hook* 'clojure-mode-hook (setq-local helm-dash-docsets '("Clojure")))
   (add-hook* 'elixir-mode-hook (setq-local helm-dash-docsets '("Elixir")))
@@ -467,6 +448,9 @@ Examples:
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
   (add-hook* 'after-save-hook (indent-buffer-on-save))
+  ;; Doesn't work
+  (add-hook* 'prog-mode-hook (set-window-fringes (selected-window) 2 0 t))
+
   (key-chord-define-global "xs" 'evil-normal-state-and-save))
 
 ;; Do not write anything past this comment. This is where Emacs will
