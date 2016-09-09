@@ -119,6 +119,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
+   ;; dotspacemacs-default-font '("Source Code Pro"
    dotspacemacs-default-font '("Source Code Pro"
                                :size 11
                                :weight bold
@@ -346,8 +347,27 @@ you should place your code here."
     :config
     (multiple-cursors-mode t))
 
+  (use-package all-the-icons
+    :load-path "~/.spacemacs.d/all-the-icons.el/"
+    :init
+    (ensure-clone "domtronn" "all-the-icons.el" "master"))
+  (all-the-icons-octicon "file-binary")
+
   (use-package neotree
     :config
+    ;; Redefining neotree-find to ignore yes-or-no-p
+    (defun neotree-find (&optional path default-path)
+      (interactive)
+      (let* ((ndefault-path (if default-path default-path
+                              (neo-path--get-working-dir)))
+             (npath (if path path
+                      (or (buffer-file-name) ndefault-path)))
+             (do-open-p nil))
+        (neo-global--open-and-find npath)
+        (when neo-auto-indent-point
+          (neo-point-auto-indent)))
+      (neo-global--select-window))
+
     (defun neotree-find-project-root-no-jump ()
       (interactive)
       (let ((c (current-buffer))
@@ -361,6 +381,10 @@ you should place your code here."
     (defadvice helm-projectile-find-file (after helm-projectile-find-file activate)
       (neotree-find-project-root-no-jump))
     (defadvice helm-projectile-switch-project (after helm-projectile-switch-project activate)
+      (neotree-find-project-root-no-jump))
+    (defadvice helm-mini (after helm-mini activate)
+      (neotree-find-project-root-no-jump))
+    (defadvice spacemacs/helm-find-files (after helm-find-files activate)
       (neotree-find-project-root-no-jump)))
 
   (use-package doom-theme
@@ -371,12 +395,12 @@ you should place your code here."
 
     (defun doom*neo-insert-root-entry (node)
       "Pretty-print pwd in neotree"
-      (list (concat "  " (projectile-project-name))))
+      (list (concat " ☰ " (projectile-project-name))))
 
     (defun doom*neo-insert-fold-symbol (name)
       "Custom hybrid unicode theme with leading whitespace."
-      (or (and (eq name 'open)  (neo-buffer--insert-with-face " -  " 'neo-expand-btn-face))
-          (and (eq name 'close) (neo-buffer--insert-with-face " +  " 'neo-expand-btn-face))
+      (or (and (eq name 'open)  (neo-buffer--insert-with-face " - ⛉ " 'neo-expand-btn-face))
+          (and (eq name 'close) (neo-buffer--insert-with-face " + ⛊ " 'neo-expand-btn-face))
           (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
 
     (advice-add 'neo-buffer--insert-fold-symbol :override 'doom*neo-insert-fold-symbol)
