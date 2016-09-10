@@ -118,13 +118,10 @@ values."
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
-   ;; size to make separators look not too crappy.
-   ;; dotspacemacs-default-font '("Source Code Pro"
-   dotspacemacs-default-font '("Source Code Pro"
+   dotspacemacs-default-font '("Fira Mono"
                                :size 11
                                :weight bold
-                               :width normal
-                               :powerline-scale 1.7)
+                               :width normal)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -324,16 +321,19 @@ you should place your code here."
   (bind-key* "M-8" 'select-window-8)
   (bind-key* "M-9" 'select-window-9)
 
-  (require 'magit)
-  (define-key magit-mode-map "\M-1" 'select-window-1)
-  (define-key magit-mode-map "\M-2" 'select-window-2)
-  (define-key magit-mode-map "\M-3" 'select-window-3)
-  (define-key magit-mode-map "\M-4" 'select-window-4)
-  (define-key magit-mode-map "\M-5" 'select-window-5)
-  (define-key magit-mode-map "\M-6" 'select-window-6)
-  (define-key magit-mode-map "\M-7" 'select-window-7)
-  (define-key magit-mode-map "\M-8" 'select-window-8)
-  (define-key magit-mode-map "\M-9" 'select-window-9)
+  (use-package magit
+    :config
+    (add-hook* 'magit-mode-hook (setq cursor-in-non-selected-windows nil))
+    (define-key magit-mode-map "\M-1" 'select-window-1)
+    (define-key magit-mode-map "\M-2" 'select-window-2)
+    (define-key magit-mode-map "\M-3" 'select-window-3)
+    (define-key magit-mode-map "\M-4" 'select-window-4)
+    (define-key magit-mode-map "\M-5" 'select-window-5)
+    (define-key magit-mode-map "\M-6" 'select-window-6)
+    (define-key magit-mode-map "\M-7" 'select-window-7)
+    (define-key magit-mode-map "\M-8" 'select-window-8)
+    (define-key magit-mode-map "\M-9" 'select-window-9))
+
   (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
 
   (use-package multiple-cursors
@@ -370,22 +370,70 @@ you should place your code here."
 
     (defun neotree-find-project-root-no-jump ()
       (interactive)
-      (let ((c (current-buffer))
-            (origin-buffer-file-name (buffer-file-name)))
-        (neotree-find (projectile-project-root))
-        (neotree-find origin-buffer-file-name)
-        (hl-line-mode 1)
-        (switch-to-buffer c)
-        (setq default-directory (file-name-directory buffer-file-name))))
+      (when (projectile-project-p)
+        (let ((c (current-buffer))
+              (origin-buffer-file-name (buffer-file-name)))
+          (neotree-find (projectile-project-root))
+          (neotree-find origin-buffer-file-name)
+          (hl-line-mode 1)
+          (switch-to-buffer c)
+          (setq default-directory (file-name-directory buffer-file-name)))))
 
-    (defadvice helm-projectile-find-file (after helm-projectile-find-file activate)
-      (neotree-find-project-root-no-jump))
-    (defadvice helm-projectile-switch-project (after helm-projectile-switch-project activate)
-      (neotree-find-project-root-no-jump))
-    (defadvice helm-mini (after helm-mini activate)
-      (neotree-find-project-root-no-jump))
-    (defadvice spacemacs/helm-find-files (after helm-find-files activate)
-      (neotree-find-project-root-no-jump)))
+    (defun update-neo-tree-for-template (fun)
+      `(defadvice ,fun (after ,fun activate)
+         (neotree-find-project-root-no-jump)))
+
+    (defmacro update-neo-tree-for (&rest funs)
+      (let ((forms (mapcar 'update-neo-tree-for-template funs)))
+        `(progn ,@forms)))
+
+    (update-neo-tree-for
+     helm-projectile-find-file
+     helm-projectile-switch-project
+     helm-mini
+     spacemacs/helm-find-file
+     ;; select-window-1
+     ;; select-window-2
+     ;; select-window-3
+     ;; select-window-4
+     ;; select-window-5
+     ;; select-window-6
+     ;; select-window-7
+     ;; select-window-8
+     ;; select-window-9
+     )
+
+    (defadvice eyebrowse-switch-to-window-config-1 (before eyebrowse-switch-to-window-config-1 activate)
+      (neotree-hide))
+    (defadvice eyebrowse-switch-to-window-config-2 (before eyebrowse-switch-to-window-config-2 activate)
+      (neotree-hide))
+    (defadvice eyebrowse-switch-to-window-config-3 (before eyebrowse-switch-to-window-config-3 activate)
+      (neotree-hide))
+    (defadvice eyebrowse-switch-to-window-config-4 (before eyebrowse-switch-to-window-config-4 activate)
+      (neotree-hide))
+    (defadvice eyebrowse-switch-to-window-config-5 (before eyebrowse-switch-to-window-config-5 activate)
+      (neotree-hide))
+
+    (defadvice eyebrowse-switch-to-window-config-1 (after eyebrowse-switch-to-window-config-1 activate)
+      (progn
+        (select-window-1)
+        (neotree-find-project-root-no-jump)))
+    (defadvice eyebrowse-switch-to-window-config-2 (after eyebrowse-switch-to-window-config-2 activate)
+      (progn
+        (select-window-1)
+        (neotree-find-project-root-no-jump)))
+    (defadvice eyebrowse-switch-to-window-config-3 (after eyebrowse-switch-to-window-config-3 activate)
+      (progn
+        (select-window-1)
+        (neotree-find-project-root-no-jump)))
+    (defadvice eyebrowse-switch-to-window-config-4 (after eyebrowse-switch-to-window-config-4 activate)
+      (progn
+        (select-window-1)
+        (neotree-find-project-root-no-jump)))
+    (defadvice eyebrowse-switch-to-window-config-5 (after eyebrowse-switch-to-window-config-5 activate)
+      (progn
+        (select-window-1)
+        (neotree-find-project-root-no-jump))))
 
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
@@ -473,11 +521,7 @@ you should place your code here."
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
     "4" 'eyebrowse-switch-to-window-config-4
-    "5" 'eyebrowse-switch-to-window-config-5
-    "6" 'eyebrowse-switch-to-window-config-6
-    "7" 'eyebrowse-switch-to-window-config-7
-    "8" 'eyebrowse-switch-to-window-config-8
-    "9" 'eyebrowse-switch-to-window-config-9)
+    "5" 'eyebrowse-switch-to-window-config-5)
 
   (defun my/helm-exit-minibuffer ()
     (interactive)
@@ -520,6 +564,7 @@ you should place your code here."
  '(nyan-bar-length 14)
  '(nyan-mode t)
  '(paradox-github-token t)
+ '(powerline-default-separator (quote box))
  '(quote (paradox-github-token t)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
