@@ -355,6 +355,19 @@ you should place your code here."
 
   (use-package neotree
     :config
+    (defun neo-insert-root-entry (node)
+      "Pretty-print pwd in neotree"
+      (list (concat " ☰ " (projectile-project-name))))
+
+    (defun neo-insert-fold-symbol (name)
+      "Custom hybrid unicode theme with leading whitespace."
+      (or (and (eq name 'open)  (neo-buffer--insert-with-face " - ⛉ " 'neo-expand-btn-face))
+          (and (eq name 'close) (neo-buffer--insert-with-face " + ⛊ " 'neo-expand-btn-face))
+          (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
+
+    (advice-add 'neo-buffer--insert-fold-symbol :override 'neo-insert-fold-symbol)
+    (advice-add 'neo-buffer--insert-root-entry :filter-args 'neo-insert-root-entry)
+
     ;; Redefining neotree-find to ignore yes-or-no-p
     (defun neotree-find (&optional path default-path)
       (interactive)
@@ -371,12 +384,12 @@ you should place your code here."
     (defun neotree-find-project-root-no-jump ()
       (interactive)
       (when (projectile-project-p)
-        (let ((c (current-buffer))
+        (let ((n (window-numbering-get-number))
               (origin-buffer-file-name (buffer-file-name)))
           (neotree-find (projectile-project-root))
           (neotree-find origin-buffer-file-name)
           (hl-line-mode 1)
-          (switch-to-buffer c)
+          (select-window-by-number n)
           (setq default-directory (file-name-directory buffer-file-name)))))
 
     (defun update-neo-tree-for-template (fun)
@@ -392,48 +405,32 @@ you should place your code here."
      helm-projectile-switch-project
      helm-mini
      spacemacs/helm-find-file
-     ;; select-window-1
-     ;; select-window-2
-     ;; select-window-3
-     ;; select-window-4
-     ;; select-window-5
-     ;; select-window-6
-     ;; select-window-7
-     ;; select-window-8
-     ;; select-window-9
-     )
+     select-window-1
+     select-window-2
+     select-window-3
+     select-window-4
+     select-window-5
+     select-window-6
+     select-window-7
+     select-window-8
+     select-window-9)
 
-    (defadvice eyebrowse-switch-to-window-config-1 (before eyebrowse-switch-to-window-config-1 activate)
-      (neotree-hide))
-    (defadvice eyebrowse-switch-to-window-config-2 (before eyebrowse-switch-to-window-config-2 activate)
-      (neotree-hide))
-    (defadvice eyebrowse-switch-to-window-config-3 (before eyebrowse-switch-to-window-config-3 activate)
-      (neotree-hide))
-    (defadvice eyebrowse-switch-to-window-config-4 (before eyebrowse-switch-to-window-config-4 activate)
-      (neotree-hide))
-    (defadvice eyebrowse-switch-to-window-config-5 (before eyebrowse-switch-to-window-config-5 activate)
-      (neotree-hide))
+    (defun neo-tree-switch-window-template (num)
+      (let ((fn (read (concat "eyebrowse-switch-to-window-config-" (number-to-string num)))))
+        `(progn
+           (defadvice ,fn (before ,fn activate)
+             (neotree-hide))
+           (defadvice ,fn (after ,fn activate)
+             (progn
+               ;; TODO Remember last window switched from
+               (select-window-1)
+               (neotree-find-project-root-no-jump))))))
 
-    (defadvice eyebrowse-switch-to-window-config-1 (after eyebrowse-switch-to-window-config-1 activate)
-      (progn
-        (select-window-1)
-        (neotree-find-project-root-no-jump)))
-    (defadvice eyebrowse-switch-to-window-config-2 (after eyebrowse-switch-to-window-config-2 activate)
-      (progn
-        (select-window-1)
-        (neotree-find-project-root-no-jump)))
-    (defadvice eyebrowse-switch-to-window-config-3 (after eyebrowse-switch-to-window-config-3 activate)
-      (progn
-        (select-window-1)
-        (neotree-find-project-root-no-jump)))
-    (defadvice eyebrowse-switch-to-window-config-4 (after eyebrowse-switch-to-window-config-4 activate)
-      (progn
-        (select-window-1)
-        (neotree-find-project-root-no-jump)))
-    (defadvice eyebrowse-switch-to-window-config-5 (after eyebrowse-switch-to-window-config-5 activate)
-      (progn
-        (select-window-1)
-        (neotree-find-project-root-no-jump))))
+    (defmacro neo-tree-switch-window (&rest nums)
+      (let ((forms (mapcar 'neo-tree-switch-window-template nums)))
+        `(progn ,@forms)))
+
+    (neo-tree-switch-window 1 2 3 4 5 6 7 8 9))
 
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
@@ -441,18 +438,6 @@ you should place your code here."
     (require 'f)
     (load-file "~/.spacemacs.d/modeline.el")
 
-    (defun doom*neo-insert-root-entry (node)
-      "Pretty-print pwd in neotree"
-      (list (concat " ☰ " (projectile-project-name))))
-
-    (defun doom*neo-insert-fold-symbol (name)
-      "Custom hybrid unicode theme with leading whitespace."
-      (or (and (eq name 'open)  (neo-buffer--insert-with-face " - ⛉ " 'neo-expand-btn-face))
-          (and (eq name 'close) (neo-buffer--insert-with-face " + ⛊ " 'neo-expand-btn-face))
-          (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
-
-    (advice-add 'neo-buffer--insert-fold-symbol :override 'doom*neo-insert-fold-symbol)
-    (advice-add 'neo-buffer--insert-root-entry :filter-args 'doom*neo-insert-root-entry)
     (load-theme 'doom-one)
     (set-face-attribute 'mode-line-inactive nil :box nil)
     (set-face-attribute 'mode-line nil :box nil)
