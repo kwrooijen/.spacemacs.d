@@ -104,7 +104,7 @@ values."
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 5
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'text-mode
+   dotspacemacs-scratch-mode 'emacs-lisp-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -347,12 +347,6 @@ you should place your code here."
     :config
     (multiple-cursors-mode t))
 
-  (use-package all-the-icons
-    :load-path "~/.spacemacs.d/all-the-icons.el/"
-    :init
-    (ensure-clone "domtronn" "all-the-icons.el" "master"))
-  (all-the-icons-octicon "file-binary")
-
   (use-package neotree
     :config
     (defun neo-insert-root-entry (node)
@@ -367,21 +361,9 @@ you should place your code here."
 
     (advice-add 'neo-buffer--insert-fold-symbol :override 'neo-insert-fold-symbol)
     (advice-add 'neo-buffer--insert-root-entry :filter-args 'neo-insert-root-entry)
+    (setq neo-force-change-root t)
 
-    ;; Redefining neotree-find to ignore yes-or-no-p
-    (defun neotree-find (&optional path default-path)
-      (interactive)
-      (let* ((ndefault-path (if default-path default-path
-                              (neo-path--get-working-dir)))
-             (npath (if path path
-                      (or (buffer-file-name) ndefault-path)))
-             (do-open-p nil))
-        (neo-global--open-and-find npath)
-        (when neo-auto-indent-point
-          (neo-point-auto-indent)))
-      (neo-global--select-window))
-
-    (defun neotree-find-project-root-no-jump ()
+    (defun neotree-projectile-highlight-file ()
       (interactive)
       (when (projectile-project-p)
         (let ((n (window-numbering-get-number))
@@ -394,7 +376,7 @@ you should place your code here."
 
     (defun update-neo-tree-for-template (fun)
       `(defadvice ,fun (after ,fun activate)
-         (neotree-find-project-root-no-jump)))
+         (neotree-projectile-highlight-file)))
 
     (defmacro update-neo-tree-for (&rest funs)
       (let ((forms (mapcar 'update-neo-tree-for-template funs)))
@@ -405,6 +387,8 @@ you should place your code here."
      helm-projectile-switch-project
      helm-mini
      spacemacs/helm-find-file
+     winner-undo
+     winner-redo
      select-window-1
      select-window-2
      select-window-3
@@ -424,7 +408,7 @@ you should place your code here."
              (progn
                ;; TODO Remember last window switched from
                (select-window-1)
-               (neotree-find-project-root-no-jump))))))
+               (neotree-projectile-highlight-file))))))
 
     (defmacro neo-tree-switch-window (&rest nums)
       (let ((forms (mapcar 'neo-tree-switch-window-template nums)))
@@ -524,8 +508,6 @@ you should place your code here."
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
   (add-hook* 'after-save-hook (indent-buffer-on-save))
-  ;; Doesn't work
-  (add-hook* 'prog-mode-hook (set-window-fringes (selected-window) 2 0 t))
 
   (key-chord-define-global "xs" 'evil-normal-state-and-save))
 
@@ -546,11 +528,8 @@ you should place your code here."
  '(neo-persist-show t)
  '(neo-show-hidden-files nil)
  '(neo-theme (quote ascii))
- '(nyan-bar-length 14)
- '(nyan-mode t)
  '(paradox-github-token t)
- '(powerline-default-separator (quote box))
- '(quote (paradox-github-token t)))
+ '(powerline-default-separator (quote box)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
