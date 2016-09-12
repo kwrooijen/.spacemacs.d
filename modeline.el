@@ -321,6 +321,22 @@ to be enabled."
             ((= end pend) ":Bot")
             (t (format ":%d%%%%" (/ end 0.01 pend)))))))
 
+;; (defun doom-erc (args)
+;;  (let ((spec (format-spec-make
+;;                  ?a (erc-format-away-status)
+;;                  ?l (erc-format-lag-time)
+;;                  ?m (erc-format-channel-modes)
+;;                  ?n (or (erc-current-nick) "")
+;;                  ?N (erc-format-network)
+;;                  ?o (or (erc-controls-strip erc-channel-topic) "")
+;;                  ?p (erc-port-to-string erc-session-port)
+;;                  ?s (erc-format-target-and/or-server)
+;;                  ?S (erc-format-target-and/or-network)
+;;                  ?t (erc-format-target)
+                 ;; )))
+;;    (format-spec erc-mode-line-format spec)))
+;; (format "%d" erc-modified-channels-object)
+;; (erc-modified-channels-display)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun doom-mode-line (&optional id)
@@ -338,7 +354,9 @@ to be enabled."
                       (*buffer-name)
                       " "
                       (*buffer-state)
-                      ,(if (eq id 'scratch) '(*buffer-pwd))))
+                      ,(if (eq id 'scratch) '(*buffer-pwd))
+                      (powerline-raw erc-modified-channels-object  'mode-line-count-face 'l)
+                      ))
            (rhs (list (*vc)
                       "  " (*major-mode) "  "
                       (propertize

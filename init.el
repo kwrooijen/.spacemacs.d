@@ -349,6 +349,9 @@ you should place your code here."
 
   (use-package neotree
     :config
+    (setq neo-force-change-root t
+          neo-toggle-window-keep-p t)
+
     (defun neo-insert-root-entry (node)
       "Pretty-print pwd in neotree"
       (list (concat " ☰ " (projectile-project-name))))
@@ -361,7 +364,6 @@ you should place your code here."
 
     (advice-add 'neo-buffer--insert-fold-symbol :override 'neo-insert-fold-symbol)
     (advice-add 'neo-buffer--insert-root-entry :filter-args 'neo-insert-root-entry)
-    (setq neo-force-change-root t)
 
     (defun neotree-projectile-highlight-file ()
       (interactive)
@@ -381,6 +383,18 @@ you should place your code here."
     (defmacro update-neo-tree-for (&rest funs)
       (let ((forms (mapcar 'update-neo-tree-for-template funs)))
         `(progn ,@forms)))
+
+    (defun neotree-double-toggle ()
+      (neotree-toggle)
+      (neotree-toggle))
+
+    (defadvice spacemacs/default-pop-shell (after spacemacs/default-pop-shell activate)
+      (neotree-double-toggle))
+
+    (defadvice compile (after compile activate)
+      (neotree-double-toggle))
+
+    (add-hook 'shell-mode-hook 'neotree-double-toggle)
 
     (update-neo-tree-for
      helm-projectile-find-file
@@ -418,15 +432,15 @@ you should place your code here."
 
   (use-package doom-theme
     :load-path "~/.spacemacs.d/emacs-doom-theme/"
-    :config
+    :init
     (require 'f)
+    (ensure-clone "hlissner" "emacs-doom-theme" "master")
     (load-file "~/.spacemacs.d/modeline.el")
-
+    (require 'doom-themes)
+    (add-hook 'find-file-hook 'doom-buffer-mode)
     (load-theme 'doom-one)
     (set-face-attribute 'mode-line-inactive nil :box nil)
-    (set-face-attribute 'mode-line nil :box nil)
-    :init
-    (ensure-clone "hlissner" "emacs-doom-theme" "master"))
+    (set-face-attribute 'mode-line nil :box nil))
 
   (use-package hlinum
     :ensure t
@@ -507,7 +521,7 @@ you should place your code here."
   (add-hook* 'rust-mode-hook (setq-local helm-dash-docsets '("Rust")))
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
-  (add-hook* 'after-save-hook (indent-buffer-on-save))
+  (add-hook* 'before-save-hook (indent-buffer-on-save))
 
   (key-chord-define-global "xs" 'evil-normal-state-and-save))
 
@@ -520,8 +534,10 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+    ("82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(elm-format-on-save t)
+ '(elscreen-tab-display-control t)
+ '(elscreen-tab-display-kill-screen nil)
  '(evil-want-Y-yank-to-eol t)
  '(helm-make-comint t)
  '(neo-enter-hook (quote (ignore)))
@@ -538,4 +554,8 @@ you should place your code here."
  '(alchemist-test--failed-face ((t (:inherit font-lock-variable-name-face :foreground "tomato" :weight bold))))
  '(alchemist-test--success-face ((t (:inherit font-lock-variable-name-face :foreground "green" :weight bold))))
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(elscreen-tab-background-face ((t (:background "#1f252b"))))
+ '(elscreen-tab-control-face ((t (:background "#1f252b" :foreground "#1f252b"))))
+ '(elscreen-tab-current-screen-face ((t (:background "#262c34" :foreground "#B5BABF" :height 1.2))))
+ '(elscreen-tab-other-screen-face ((t (:background "#262c34" :foreground "#747474")))))
