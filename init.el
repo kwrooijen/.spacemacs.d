@@ -273,6 +273,11 @@ you should place your code here."
       (backward-word)
       (capitalize-word 1)))
 
+  (defun no-split ()
+    (interactive)
+    (setq-local split-width-threshold 2000)
+    (setq-local split-height-threshold 2000))
+
   (defun eww-other-window (url)
     (interactive)
     (view-buffer-other-window "*DocBuffer*")
@@ -370,11 +375,12 @@ you should place your code here."
       (when (projectile-project-p)
         (let ((n (window-numbering-get-number))
               (origin-buffer-file-name (buffer-file-name)))
-          (neotree-find (projectile-project-root))
-          (neotree-find origin-buffer-file-name)
-          (hl-line-mode 1)
-          (select-window-by-number n)
-          (setq default-directory (file-name-directory buffer-file-name)))))
+          (when origin-buffer-file-name
+            (neotree-find (projectile-project-root))
+            (neotree-find origin-buffer-file-name)
+            (hl-line-mode 1)
+            (select-window-by-number n)
+            (setq default-directory (file-name-directory buffer-file-name))))))
 
     (defun update-neo-tree-for-template (fun)
       `(defadvice ,fun (after ,fun activate)
@@ -395,12 +401,16 @@ you should place your code here."
       (neotree-double-toggle))
 
     (add-hook 'shell-mode-hook 'neotree-double-toggle)
+    (add-hook 'comint-mode-hook 'no-split)
+    (add-hook 'compile-mode-hook 'no-split)
+    (add-hook 'eshell-mode-hook 'no-split)
 
     (update-neo-tree-for
      helm-projectile-find-file
      helm-projectile-switch-project
      helm-mini
-     spacemacs/helm-find-file
+     ido-kill-buffer
+     spacemacs/helm-find-files
      winner-undo
      winner-redo
      select-window-1
@@ -497,8 +507,6 @@ you should place your code here."
       (interactive)
       (message "Use C-M-m to send")))
 
-  (spacemacs/toggle-mode-line-minor-modes-off)
-
   (evil-leader/set-key
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
@@ -532,6 +540,9 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(anzu-cons-mode-line-p nil)
+ '(anzu-mode-line-update-function (quote spacemacs/anzu-update-mode-line))
+ '(auto-compile-mode-line-counter t)
  '(custom-safe-themes
    (quote
     ("82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
@@ -539,13 +550,19 @@ you should place your code here."
  '(elscreen-tab-display-control t)
  '(elscreen-tab-display-kill-screen nil)
  '(evil-want-Y-yank-to-eol t)
+ '(global-hl-line-mode t)
+ '(global-page-break-lines-mode t)
+ '(helm-display-header-line nil)
+ '(helm-echo-input-in-header-line t)
  '(helm-make-comint t)
  '(neo-enter-hook (quote (ignore)))
  '(neo-persist-show t)
  '(neo-show-hidden-files nil)
  '(neo-theme (quote ascii))
  '(paradox-github-token t)
- '(powerline-default-separator (quote box)))
+ '(powerline-default-separator (quote box))
+ '(spaceline-helm-mode t)
+ '(spaceline-info-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -558,4 +575,5 @@ you should place your code here."
  '(elscreen-tab-background-face ((t (:background "#1f252b"))))
  '(elscreen-tab-control-face ((t (:background "#1f252b" :foreground "#1f252b"))))
  '(elscreen-tab-current-screen-face ((t (:background "#262c34" :foreground "#B5BABF" :height 1.2))))
- '(elscreen-tab-other-screen-face ((t (:background "#262c34" :foreground "#747474")))))
+ '(elscreen-tab-other-screen-face ((t (:background "#262c34" :foreground "#747474"))))
+ '(header-line ((t (:inherit default :background nil)))))
