@@ -26,7 +26,9 @@
             (neotree-find origin-buffer-file-name)
             (hl-line-mode 1)
             (select-window-by-number n)
-            (setq default-directory (file-name-directory buffer-file-name))))))
+            (let ((dir (file-name-directory buffer-file-name)))
+              (when dir
+                (setq default-directory dir)))))))
 
     (defun update-neo-tree-for-template (fun)
       `(defadvice ,fun (after ,fun activate)
