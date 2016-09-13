@@ -14,7 +14,6 @@
      dockerfile
      git
      syntax-checking
-     eyebrowse
      yaml
      git
      markdown
@@ -180,13 +179,6 @@
 
   (load-my-packages)
 
-  (evil-leader/set-key
-    "1" 'eyebrowse-switch-to-window-config-1
-    "2" 'eyebrowse-switch-to-window-config-2
-    "3" 'eyebrowse-switch-to-window-config-3
-    "4" 'eyebrowse-switch-to-window-config-4
-    "5" 'eyebrowse-switch-to-window-config-5)
-
   (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
   (evil-define-key 'normal helm-map (kbd "<RET>") 'my/helm-exit-minibuffer)
   (key-chord-define-global "xs" 'evil-normal-state-and-save)
@@ -201,7 +193,14 @@
   (add-hook* 'rust-mode-hook (setq-local helm-dash-docsets '("Rust")))
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
-  (add-hook* 'before-save-hook (indent-buffer-on-save)))
+  (add-hook* 'before-save-hook (indent-buffer-on-save))
+
+
+  (setq-default powerline-text-scale-factor 20)
+
+
+
+  )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -215,7 +214,7 @@
    (quote
     ("82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(elm-format-on-save t)
- '(elscreen-tab-display-control t)
+ '(elscreen-tab-display-control nil)
  '(elscreen-tab-display-kill-screen nil)
  '(evil-want-Y-yank-to-eol t)
  '(global-hl-line-mode t)
@@ -228,7 +227,6 @@
  '(neo-show-hidden-files nil)
  '(neo-theme (quote ascii))
  '(paradox-github-token t)
- '(powerline-default-separator (quote box))
  '(spaceline-helm-mode t)
  '(spaceline-info-mode t))
 (custom-set-faces
@@ -242,6 +240,6 @@
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  '(elscreen-tab-background-face ((t (:background "#1f252b"))))
  '(elscreen-tab-control-face ((t (:background "#1f252b" :foreground "#1f252b"))))
- '(elscreen-tab-current-screen-face ((t (:background "#262c34" :foreground "#B5BABF" :height 1.2))))
+ '(elscreen-tab-current-screen-face ((t (:background "#262c34" :foreground "#B5BABF"))))
  '(elscreen-tab-other-screen-face ((t (:background "#262c34" :foreground "#747474"))))
- '(header-line ((t (:inherit default :background nil)))))
+ '(header-line ((t (:background "#1f252b")))))
