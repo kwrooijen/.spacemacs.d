@@ -326,186 +326,24 @@ you should place your code here."
   (bind-key* "M-8" 'select-window-8)
   (bind-key* "M-9" 'select-window-9)
 
-  (use-package magit
-    :config
-    (add-hook* 'magit-mode-hook (setq cursor-in-non-selected-windows nil))
-    (define-key magit-mode-map "\M-1" 'select-window-1)
-    (define-key magit-mode-map "\M-2" 'select-window-2)
-    (define-key magit-mode-map "\M-3" 'select-window-3)
-    (define-key magit-mode-map "\M-4" 'select-window-4)
-    (define-key magit-mode-map "\M-5" 'select-window-5)
-    (define-key magit-mode-map "\M-6" 'select-window-6)
-    (define-key magit-mode-map "\M-7" 'select-window-7)
-    (define-key magit-mode-map "\M-8" 'select-window-8)
-    (define-key magit-mode-map "\M-9" 'select-window-9))
+  (add-to-load-path "~/.spacemacs.d/packages")
+
+  (defun require-template (symbol)
+    `(require (quote ,symbol)))
+
+  (defmacro load-my-packages ()
+    (let* ((filter-fn (lambda (x) (not (member x '("." "..")))))
+           (strip-ext-fn (lambda (x) (s-left -3 x)))
+           (all-files (directory-files "~/.spacemacs.d/packages/"))
+           (package-files-ext (-filter filter-fn all-files))
+           (package-files (-map strip-ext-fn package-files-ext))
+           (package-symbols (-map 'read package-files))
+           (package-requires (-map 'require-template package-symbols)))
+      `(progn ,@package-requires)))
+
+  (load-my-packages)
 
   (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
-
-  (use-package multiple-cursors
-    :load-path "~/.spacemacs.d/multiple-cursors.el/"
-    :bind* (("M-K" . mc/mark-previous-like-this)
-            ("M-J" . mc/mark-next-like-this))
-    :bind (:map mc/keymap
-                ("<return>" . newline))
-    :init
-    (ensure-clone "myrjola" "multiple-cursors.el" "evil-compat")
-    :config
-    (multiple-cursors-mode t))
-
-  (use-package neotree
-    :config
-    (setq neo-force-change-root t
-          neo-toggle-window-keep-p t)
-
-    (defun neo-insert-root-entry (node)
-      "Pretty-print pwd in neotree"
-      (list (concat " ☰ " (projectile-project-name))))
-
-    (defun neo-insert-fold-symbol (name)
-      "Custom hybrid unicode theme with leading whitespace."
-      (or (and (eq name 'open)  (neo-buffer--insert-with-face " - ⛉ " 'neo-expand-btn-face))
-          (and (eq name 'close) (neo-buffer--insert-with-face " + ⛊ " 'neo-expand-btn-face))
-          (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
-
-    (advice-add 'neo-buffer--insert-fold-symbol :override 'neo-insert-fold-symbol)
-    (advice-add 'neo-buffer--insert-root-entry :filter-args 'neo-insert-root-entry)
-
-    (defun neotree-projectile-highlight-file ()
-      (interactive)
-      (when (projectile-project-p)
-        (let ((n (window-numbering-get-number))
-              (origin-buffer-file-name (buffer-file-name)))
-          (when origin-buffer-file-name
-            (neotree-find (projectile-project-root))
-            (neotree-find origin-buffer-file-name)
-            (hl-line-mode 1)
-            (select-window-by-number n)
-            (setq default-directory (file-name-directory buffer-file-name))))))
-
-    (defun update-neo-tree-for-template (fun)
-      `(defadvice ,fun (after ,fun activate)
-         (neotree-projectile-highlight-file)))
-
-    (defmacro update-neo-tree-for (&rest funs)
-      (let ((forms (mapcar 'update-neo-tree-for-template funs)))
-        `(progn ,@forms)))
-
-    (defun neotree-double-toggle ()
-      (neotree-toggle)
-      (neotree-toggle))
-
-    (defadvice spacemacs/default-pop-shell (after spacemacs/default-pop-shell activate)
-      (neotree-double-toggle))
-
-    (defadvice compile (after compile activate)
-      (neotree-double-toggle))
-
-    (add-hook 'shell-mode-hook 'neotree-double-toggle)
-    (add-hook 'comint-mode-hook 'no-split)
-    (add-hook 'compile-mode-hook 'no-split)
-    (add-hook 'eshell-mode-hook 'no-split)
-
-    (update-neo-tree-for
-     helm-projectile-find-file
-     helm-projectile-switch-project
-     helm-mini
-     ido-kill-buffer
-     spacemacs/helm-find-files
-     winner-undo
-     winner-redo
-     select-window-1
-     select-window-2
-     select-window-3
-     select-window-4
-     select-window-5
-     select-window-6
-     select-window-7
-     select-window-8
-     select-window-9)
-
-    (defun neo-tree-switch-window-template (num)
-      (let ((fn (read (concat "eyebrowse-switch-to-window-config-" (number-to-string num)))))
-        `(progn
-           (defadvice ,fn (before ,fn activate)
-             (neotree-hide))
-           (defadvice ,fn (after ,fn activate)
-             (progn
-               ;; TODO Remember last window switched from
-               (select-window-1)
-               (neotree-projectile-highlight-file))))))
-
-    (defmacro neo-tree-switch-window (&rest nums)
-      (let ((forms (mapcar 'neo-tree-switch-window-template nums)))
-        `(progn ,@forms)))
-
-    (neo-tree-switch-window 1 2 3 4 5 6 7 8 9))
-
-  (use-package doom-theme
-    :load-path "~/.spacemacs.d/emacs-doom-theme/"
-    :init
-    (require 'f)
-    (ensure-clone "hlissner" "emacs-doom-theme" "master")
-    (load-file "~/.spacemacs.d/modeline.el")
-    (require 'doom-themes)
-    (add-hook 'find-file-hook 'doom-buffer-mode)
-    (load-theme 'doom-one)
-    (set-face-attribute 'mode-line-inactive nil :box nil)
-    (set-face-attribute 'mode-line nil :box nil))
-
-  (use-package hlinum
-    :ensure t
-    :config
-    (set-face-attribute 'linum-highlight-face nil
-                        :inherit 'hl-line-face
-                        :background nil
-                        :foreground "DodgerBlue")
-    (hlinum-activate))
-
-  (use-package fringe
-    :config
-    (setq-default fringes-outside-margins t)
-    (set-fringe-mode '1)
-    (add-hook 'prog-mode-hook 'linum-mode)
-    (advice-add 'neo-global--select-window :after (lambda ()
-                                                    (setq cursor-in-non-selected-windows nil)
-                                                    (set-window-fringes neo-global--window 1 0)
-                                                    (spacemacs/toggle-mode-line-off)))
-
-    (defun small-fringe ()
-      (if (not (active-minibuffer-window))
-          (set-window-fringes (selected-window) 2 0 t)))
-
-    (add-hook 'buffer-list-update-hook 'small-fringe)
-    (set-face-foreground 'git-gutter-fr+-added "green")
-    (set-face-background 'git-gutter-fr+-added "green")
-    (set-face-foreground 'git-gutter-fr+-modified "yellow")
-    (set-face-background 'git-gutter-fr+-modified "yellow")
-    (set-face-foreground 'git-gutter-fr+-deleted "red")
-    (set-face-background 'git-gutter-fr+-deleted "red")
-    (set-face-background 'fringe "#262c34"))
-
-  (use-package erc
-    :bind (:map erc-mode-map
-                ("C-M-m" . erc-send-current-line)
-                ("RET" . erc-no-return))
-    :config
-    (setq
-     erc-nick "kwrooijen"
-     erc-scrolltobottom-mode t
-     erc-hide-list '("JOIN" "PART" "QUIT"))
-    :init
-    (defadvice attic/erc (after attic-ad/attic/erc-after activate)
-      (setq erc-password nil))
-    (defun attic/erc ()
-      (interactive)
-      (load "~/.erc.gpg")
-      (erc :server "irc.freenode.net"
-           :port 6667
-           :nick erc-nick
-           :password erc-password))
-    (defun erc-no-return ()
-      (interactive)
-      (message "Use C-M-m to send")))
 
   (evil-leader/set-key
     "1" 'eyebrowse-switch-to-window-config-1
