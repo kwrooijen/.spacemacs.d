@@ -196,10 +196,6 @@
   (add-hook* 'before-save-hook (indent-buffer-on-save))
 
 
-  (setq-default powerline-text-scale-factor 20)
-
-
-
   )
 
 (custom-set-variables

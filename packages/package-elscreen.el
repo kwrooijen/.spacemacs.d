@@ -40,6 +40,7 @@
 
     )
 
+;; (setq-default powerline-text-scale-factor 20)
 
 ;; (defface epic
 ;;   '((t (:background "#262c34")))
