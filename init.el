@@ -7,7 +7,10 @@
      auto-completion
      (dash :variables
            dash-helm-dash-docset-path "~/.docsets")
-     elixir
+     (auto-completion :variables
+                      auto-completion-enable-help-tooltip t)
+     (elixir :variables
+             alchemist-test--mode-name-face nil)
      elm
      emacs-lisp
      erc
@@ -27,7 +30,9 @@
             shell-default-shell 'eshell
             shell-protect-eshell-prompt t)
      ;; spell-checking
-     version-control)
+     (version-control :variables
+                      diff-hl-side 'left
+                      git-gutter-fr+-side 'left-fringe))
    dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum simpleclip)
    dotspacemacs-excluded-packages '(vi-tilde-fringe)
    dotspacemacs-delete-orphan-packages t))
@@ -144,16 +149,12 @@
            (package-requires (-map 'require-template package-symbols)))
       `(progn ,@package-requires)))
 
-  (setq diff-hl-side 'left
-        git-gutter-fr+-side 'left-fringe
-        x-select-enable-clipboard nil
+  (setq x-select-enable-clipboard nil
         indent-buffer-modes '(scss-mode)
-        x-select-enable-clipboard nil
         projectile-use-git-grep t
         scroll-error-top-bottom t
         helm-dash-browser-func 'eww-other-window
         helm-dash-docsets-path "~/.docsets"
-        alchemist-test--mode-name-face nil
         helm-make-named-buffer t
         linum-format (quote "%4d "))
 
@@ -223,6 +224,9 @@
  '(neo-persist-show t)
  '(neo-show-hidden-files nil)
  '(neo-theme (quote ascii))
+ '(package-selected-packages
+   (quote
+    (transmission flycheck helm helm-core hydra zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights uuidgen use-package twittering-mode toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle simpleclip shell-pop scss-mode ruby-end restart-emacs ranger rainbow-delimiters racer quelpa popwin persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme key-chord info+ indent-guide ido-vertical-mode hungry-delete htmlize hlinum hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-elm flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks elm-mode elisp-slime-nav dockerfile-mode diff-hl define-word company-statistics company-racer company-quickhelp clean-aindent-mode buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(spaceline-helm-mode t)
  '(spaceline-info-mode t))

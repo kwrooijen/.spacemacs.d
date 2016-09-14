@@ -53,7 +53,7 @@
     (defadvice elscreen-goto (before elscreen-goto activate)
       (progn
         (when (get-buffer " *NeoTree*")
-          (kill-buffer " *NeoTree*"))))
+          (neotree-hide))))
 
     (defadvice elscreen-goto (after elscreen-goto activate)
       (progn
