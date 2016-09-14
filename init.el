@@ -28,7 +28,7 @@
             shell-protect-eshell-prompt t)
      ;; spell-checking
      version-control)
-   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum)
+   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum simpleclip)
    dotspacemacs-excluded-packages '(vi-tilde-fringe)
    dotspacemacs-delete-orphan-packages t))
 
@@ -163,8 +163,9 @@
         twittering-use-master-password t
         twittering-convert-fix-size 24)
 
-  (bind-key* "C-S-V" 'x-clipboard-yank)
-  (bind-key* "C-S-C" 'clipboard-kill-ring-save)
+  (bind-key* "C-S-V" 'simpleclip-paste)
+  (bind-key* "C-S-C" 'simpleclip-copy)
+  (bind-key* "C-S-X" 'simpleclip-cut)
   (bind-key* "M-+" 'align-regexp)
   (bind-key* "M-C" 'capitalize-previous-word)
   (bind-key* "M-1" 'select-window-1)

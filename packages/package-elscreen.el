@@ -33,12 +33,7 @@
       "2" 'elscreen-goto-2
       "3" 'elscreen-goto-3
       "4" 'elscreen-goto-4
-      "5" 'elscreen-goto-5)
-
-    (defadvice find-file (after find-file activate)
-      (setq header-line-format ""))
-
-    )
+      "5" 'elscreen-goto-5))
 
 ;; (setq-default powerline-text-scale-factor 20)
 
