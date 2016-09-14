@@ -238,5 +238,5 @@
  '(elscreen-tab-background-face ((t (:background "#1f252b"))))
  '(elscreen-tab-control-face ((t (:background "#1f252b" :foreground "#1f252b"))))
  '(elscreen-tab-current-screen-face ((t (:background "#262c34" :foreground "#B5BABF"))))
- '(elscreen-tab-other-screen-face ((t (:background "#262c34" :foreground "#747474"))))
+ '(elscreen-tab-other-screen-face ((t (:background "#353a42" :foreground "#1e2022"))))
  '(header-line ((t (:background "#1f252b")))))
