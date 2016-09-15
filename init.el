@@ -9,8 +9,7 @@
            dash-helm-dash-docset-path "~/.docsets")
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t)
-     (elixir :variables
-             alchemist-test--mode-name-face nil)
+     elixir
      elm
      emacs-lisp
      erc
@@ -30,10 +29,8 @@
             shell-default-shell 'eshell
             shell-protect-eshell-prompt t)
      ;; spell-checking
-     (version-control :variables
-                      diff-hl-side 'left
-                      git-gutter-fr+-side 'left-fringe))
-   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum simpleclip)
+     version-control)
+   dotspacemacs-additional-packages '(key-chord scss-mode twittering-mode uuidgen hlinum simpleclip doom-themes)
    dotspacemacs-excluded-packages '(vi-tilde-fringe)
    dotspacemacs-delete-orphan-packages t))
 
@@ -149,7 +146,10 @@
            (package-requires (-map 'require-template package-symbols)))
       `(progn ,@package-requires)))
 
-  (setq x-select-enable-clipboard nil
+  (setq diff-hl-side 'left
+        git-gutter-fr+-side 'left-fringe
+        alchemist-test--mode-name-face nil
+        x-select-enable-clipboard nil
         indent-buffer-modes '(scss-mode)
         projectile-use-git-grep t
         scroll-error-top-bottom t
@@ -157,6 +157,13 @@
         helm-dash-docsets-path "~/.docsets"
         helm-make-named-buffer t
         linum-format (quote "%4d "))
+
+  (setq neo-smart-open nil
+        neo-dont-be-alone nil
+        neo-persist-show nil
+        neo-show-hidden-files nil
+        neo-auto-indent-point nil
+        neo-modern-sidebar nil)
 
   (setq twittering-icon-mode t
         ;; Use master password for twitter instead of authenticating every time
@@ -195,10 +202,7 @@
   (add-hook* 'rust-mode-hook (setq-local helm-dash-docsets '("Rust")))
   (add-hook* 'prog-mode-hook (key-chord-mode 1))
   (add-hook* 'isearch-mode-hook (key-chord-mode 1))
-  (add-hook* 'before-save-hook (indent-buffer-on-save))
-
-
-  )
+  (add-hook* 'before-save-hook (indent-buffer-on-save)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -210,7 +214,7 @@
  '(auto-compile-mode-line-counter t)
  '(custom-safe-themes
    (quote
-    ("82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+    ("7c0f19a98f44505031ceeba97a53500a5be3b435e77f5b68d7a4d0e24d26d409" "82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(elm-format-on-save t)
  '(elscreen-tab-display-control nil)
  '(elscreen-tab-display-kill-screen nil)
@@ -226,7 +230,7 @@
  '(neo-theme (quote ascii))
  '(package-selected-packages
    (quote
-    (transmission flycheck helm helm-core hydra zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights uuidgen use-package twittering-mode toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle simpleclip shell-pop scss-mode ruby-end restart-emacs ranger rainbow-delimiters racer quelpa popwin persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme key-chord info+ indent-guide ido-vertical-mode hungry-delete htmlize hlinum hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-elm flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks elm-mode elisp-slime-nav dockerfile-mode diff-hl define-word company-statistics company-racer company-quickhelp clean-aindent-mode buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (powerline rust-mode spinner alert log4e gntp markdown-mode parent-mode projectile request gitignore-mode fringe-helper git-gutter+ git-gutter flx magit magit-popup git-commit with-editor smartparens iedit anzu highlight f s doom-themes all-the-icons deferred pos-tip yasnippet packed company dash elixir-mode pkg-info epl avy async auto-complete popup package-build bind-key bind-map evil transmission flycheck helm helm-core hydra zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights uuidgen use-package twittering-mode toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle simpleclip shell-pop scss-mode ruby-end restart-emacs ranger rainbow-delimiters racer quelpa popwin persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme key-chord info+ indent-guide ido-vertical-mode hungry-delete htmlize hlinum hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-elm flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks elm-mode elisp-slime-nav dockerfile-mode diff-hl define-word company-statistics company-racer company-quickhelp clean-aindent-mode buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(spaceline-helm-mode t)
  '(spaceline-info-mode t))

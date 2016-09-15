@@ -3,17 +3,6 @@
     (setq neo-force-change-root t
           neo-toggle-window-keep-p t)
 
-    (defun neo-insert-root-entry (node)
-      (list (concat " ☰ " (projectile-project-name))))
-
-    (defun neo-insert-fold-symbol (name)
-      (or (and (eq name 'open)  (neo-buffer--insert-with-face " - ⛉ " 'neo-expand-btn-face))
-          (and (eq name 'close) (neo-buffer--insert-with-face " + ⛊ " 'neo-expand-btn-face))
-          (and (eq name 'leaf)  (neo-buffer--insert-with-face "   " 'neo-expand-btn-face))))
-
-    (advice-add 'neo-buffer--insert-fold-symbol :override 'neo-insert-fold-symbol)
-    (advice-add 'neo-buffer--insert-root-entry :filter-args 'neo-insert-root-entry)
-
     (defun neotree-projectile-highlight-file ()
       (interactive)
       (when (projectile-project-p)
