@@ -1,5 +1,13 @@
   (use-package neotree
     :config
+    (defun neo-delete-extra-windows ()
+      (let (open?)
+        (walk-windows (lambda (window)
+                        (when (equal (buffer-name (window-buffer window)) " *NeoTree*")
+                          (when open?
+                            (delete-window window))
+                          (setq open? t))))))
+
     (setq neo-force-change-root t
           neo-toggle-window-keep-p t)
 
@@ -14,7 +22,8 @@
             (hl-line-mode 1)
             (when buffer-file-name
               (setq default-directory (file-name-directory buffer-file-name))))
-        (select-window-by-number n))))
+          (neo-delete-extra-windows)
+          (select-window-by-number n))))
 
     (defun update-neo-tree-for-template (fun)
       `(defadvice ,fun (after ,fun activate)
