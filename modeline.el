@@ -355,7 +355,6 @@ to be enabled."
                       " "
                       (*buffer-state)
                       ,(if (eq id 'scratch) '(*buffer-pwd))
-                      (powerline-raw erc-modified-channels-object  'mode-line-count-face 'l)
                       ))
            (rhs (list (*vc)
                       "  " (*major-mode) "  "

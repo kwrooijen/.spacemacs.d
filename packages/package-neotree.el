@@ -1,27 +1,7 @@
   (use-package neotree
     :config
     (add-to-list 'all-the-icons-icon-alist
-                 '("\\.elm$"          all-the-icons-fileicon "elm"       :face all-the-icons-lblue))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.ex$"           all-the-icons-octicon  "beaker"    :face all-the-icons-purple))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.eex$"          all-the-icons-octicon  "beaker"    :face all-the-icons-yellow))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.exs$"          all-the-icons-octicon  "beaker"    :face all-the-icons-red))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("^mix.lock$"       all-the-icons-octicon  "beaker"    :face all-the-icons-dorange))
-    (add-to-list 'all-the-icons-icon-alist
                  '("^Makefile$"       all-the-icons-fileicon "gnu"       :face all-the-icons-dorange))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.mk$"           all-the-icons-fileicon "gnu"       :face all-the-icons-dorange))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.sh$"           all-the-icons-fileicon "gnu"       :face all-the-icons-dorange))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.fish"          all-the-icons-faicon   "terminal"  :face all-the-icons-lpink))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.zsh"           all-the-icons-faicon   "terminal"  :face all-the-icons-lcyan))
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.sh"            all-the-icons-faicon   "terminal"  :face all-the-icons-purple))
 
     (setq neo-force-change-root t
           neo-toggle-window-keep-p t)
@@ -88,6 +68,7 @@
      spacemacs/helm-find-files
      winner-undo
      winner-redo
+     dired-find-file
      select-window-1
      select-window-2
      select-window-3
