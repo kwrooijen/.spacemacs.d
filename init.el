@@ -4,6 +4,7 @@
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
+     html
      auto-completion
      (dash :variables
            dash-helm-dash-docset-path "~/.docsets")
@@ -11,11 +12,13 @@
                       auto-completion-enable-help-tooltip t)
      elixir
      elm
+     lua
+     javascript
      emacs-lisp
      erc
      clojure
-     dockerfile
      git
+     docker
      syntax-checking
      yaml
      git
@@ -175,6 +178,7 @@
   (bind-key* "C-S-V" 'simpleclip-paste)
   (bind-key* "C-S-C" 'simpleclip-copy)
   (bind-key* "C-S-X" 'simpleclip-cut)
+  (bind-key* "M-u" 'undo-tree-redo)
   (bind-key* "M-+" 'align-regexp)
   (bind-key* "M-C" 'capitalize-previous-word)
   (bind-key* "M-1" 'select-window-1)
@@ -215,7 +219,7 @@
  '(auto-compile-mode-line-counter t)
  '(custom-safe-themes
    (quote
-    ("38f48e62e16e2c8f178c7e9de00aab382bc92d84ea382822907ed4e762388ae0" "84a0e9f3a2e3c239bcbfc5bdbd7c2ddd73e029948d47e1b14d955a0f72e78f80" "b274a26505b49a575482495a58601778be3d9f6bfab6a0463398907947c5c929" "16241cf61a64014901a8dfb661cff9e5d9702f743f4e888c26de8c92267242d6" "7c0f19a98f44505031ceeba97a53500a5be3b435e77f5b68d7a4d0e24d26d409" "82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+    ("398f0209bfd642cf7a5e3e03bdc20db2822fd6746225a4bd99ccf9b26d3059d0" "38f48e62e16e2c8f178c7e9de00aab382bc92d84ea382822907ed4e762388ae0" "84a0e9f3a2e3c239bcbfc5bdbd7c2ddd73e029948d47e1b14d955a0f72e78f80" "b274a26505b49a575482495a58601778be3d9f6bfab6a0463398907947c5c929" "16241cf61a64014901a8dfb661cff9e5d9702f743f4e888c26de8c92267242d6" "7c0f19a98f44505031ceeba97a53500a5be3b435e77f5b68d7a4d0e24d26d409" "82f76cd91d90fa8efa13d0d2eedd89dc1a3d0395aaa53323c652adb76b5ec294" "e4cd51174fa94cb07992e7ac685cab49db6682e9ff2e860113002ed3cc950aa6" "838f2f0ac542dae7e43d27902340eea41f00ac8e422632d887ed654131997d42" "b833c803c37a6b17e91e2152b9da4618302af50c7e1644b3a395ab162676d5a8" "cc67c4d5fcd37a750975cd50fb2555c9654dc5b92b6fb04d65161bdc4d708b9b" "6bc2bb2b8de7f68df77642b0615d40dc7850c2906b272d3f83a511f7195b07da" "b317b64ade8a19383695b1331496e80ae9117cfa57ab5287c436ceeded021d4b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(elm-format-on-save t)
  '(elscreen-tab-display-control nil)
  '(elscreen-tab-display-kill-screen nil)
@@ -232,8 +236,9 @@
  '(neo-theme (quote ascii))
  '(package-selected-packages
    (quote
-    (org-projectile org-download link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode clojure-snippets cargo clj-refactor inflections edn multiple-cursors paredit peg cider-eval-sexp-fu cider queue clojure-mode powerline rust-mode spinner alert log4e gntp markdown-mode parent-mode projectile request gitignore-mode fringe-helper git-gutter+ git-gutter flx magit magit-popup git-commit with-editor smartparens iedit anzu highlight f s doom-themes all-the-icons deferred pos-tip yasnippet packed company dash elixir-mode pkg-info epl avy async auto-complete popup package-build bind-key bind-map evil transmission flycheck helm helm-core hydra zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights uuidgen use-package twittering-mode toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle simpleclip shell-pop scss-mode ruby-end restart-emacs ranger rainbow-delimiters racer quelpa popwin persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme key-chord info+ indent-guide ido-vertical-mode hungry-delete htmlize hlinum hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-elm flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks elm-mode elisp-slime-nav dockerfile-mode diff-hl define-word company-statistics company-racer company-quickhelp clean-aindent-mode buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (web-mode tagedit slim-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data docker tablist docker-tramp web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc company-tern dash-functional tern coffee-mode lua-mode org-projectile org-download link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode clojure-snippets cargo clj-refactor inflections edn multiple-cursors paredit peg cider-eval-sexp-fu cider queue clojure-mode powerline rust-mode spinner alert log4e gntp markdown-mode parent-mode projectile request gitignore-mode fringe-helper git-gutter+ git-gutter flx magit magit-popup git-commit with-editor smartparens iedit anzu highlight f s doom-themes all-the-icons deferred pos-tip yasnippet packed company dash elixir-mode pkg-info epl avy async auto-complete popup package-build bind-key bind-map evil transmission flycheck helm helm-core hydra zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights uuidgen use-package twittering-mode toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle simpleclip shell-pop scss-mode ruby-end restart-emacs ranger rainbow-delimiters racer quelpa popwin persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme key-chord info+ indent-guide ido-vertical-mode hungry-delete htmlize hlinum hl-todo highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-elm flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks elm-mode elisp-slime-nav dockerfile-mode diff-hl define-word company-statistics company-racer company-quickhelp clean-aindent-mode buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
+ '(projectile-enable-caching t)
  '(spaceline-helm-mode t)
  '(spaceline-info-mode t))
 (custom-set-faces
