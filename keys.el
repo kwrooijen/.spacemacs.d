@@ -13,12 +13,12 @@
 (bind-key* "M-7" 'winum-select-window-7)
 (bind-key* "M-8" 'winum-select-window-8)
 (bind-key* "M-9" 'winum-select-window-9)
-(bind-key* "M-J" 'evil-mc-make-cursor-move-next-line)
-(bind-key* "M-K" 'evil-mc-make-cursor-move-prev-line)
+;; (bind-key* "M-J" 'evil-mc-make-cursor-move-next-line)
+;; (bind-key* "M-K" 'evil-mc-make-cursor-move-prev-line)
 
 (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
-(define-key evil-normal-state-map (kbd "gg") 'evil-mc-undo-all-cursors)
-(define-key evil-visual-state-map (kbd "gg") 'evil-mc-undo-all-cursors)
+;; (define-key evil-normal-state-map (kbd "gg") 'evil-mc-undo-all-cursors)
+;; (define-key evil-visual-state-map (kbd "gg") 'evil-mc-undo-all-cursors)
 (evil-define-key 'normal helm-map (kbd "<RET>") 'my/helm-exit-minibuffer)
 (key-chord-define-global "xs" 'evil-normal-state-and-save)
 
