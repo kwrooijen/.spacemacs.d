@@ -11,20 +11,26 @@
 ;; Load the theme (doom-one, doom-dark, etc.)
 (load-theme 'doom-one t)
 
-;;; OPTIONAL
-;; brighter source buffers (that represent files)
-(add-hook 'find-file-hook 'doom-buffer-mode-maybe)
-;; if you use auto-revert-mode
-(add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
-;; you can brighten other buffers (unconditionally) with:
-(add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
+;; ;;; OPTIONAL
+;; ;; brighter source buffers (that represent files)
+;; (add-hook 'find-file-hook 'doom-buffer-mode-maybe)
+;; ;; if you use auto-revert-mode
+;; (add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
+;; ;; you can brighten other buffers (unconditionally) with:
+;; (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
 
-;; brighter minibuffer when active
-(add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
 
-;; Enable custom neotree theme
-(require 'doom-neotree)    ; all-the-icons fonts must be installed!
+(require 'solaire-mode)
 
-;; Enable nlinum line highlighting
-(require 'doom-nlinum)     ; requires nlinum and hl-line-mode
+;; brighten buffers (that represent real files)
+(add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+
+;; ...if you use auto-revert-mode:
+(add-hook 'after-revert-hook #'turn-on-solaire-mode)
+
+;; You can do similar with the minibuffer when it is activated:
+(add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+
+;; To enable solaire-mode unconditionally for certain modes:
+(add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
 (provide 'package-doom)
