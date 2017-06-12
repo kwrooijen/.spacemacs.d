@@ -140,17 +140,27 @@
   (require 'parinferlib)
 
   (setq parinfer-extensions
-          '(defaults       ; should be included.
-            pretty-parens  ; different paren styles for different modes.
-            evil           ; If you use Evil.
-            paredit        ; Introduce some paredit commands.
-            smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
-            smart-yank))   ; Yank behavior depend on mode.
+        '(defaults pretty-parens evil
+           lispy paredit smart-tab smart-yank))
+
   (add-hook 'clojure-mode-hook #'turn-off-smartparens-mode)
   (add-hook 'clojure-mode-hook #'parinfer-mode)
 
+  (add-hook 'emacs-lisp-mode-hook #'turn-off-smartparens-mode)
+  (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
+
+
+  (defun parinfer-lispy:backward-insert ()
+    (interactive)
+    (parinfer-lispy:backward)
+    (evil-insert 0))
+
+  (define-key parinfer-mode-map (kbd "M-a") 'parinfer-lispy:backward-insert)
   (define-key parinfer-mode-map (kbd "M-q") 'parinfer-toggle-mode)
   (define-key parinfer-mode-map (kbd "<tab>") 'parinfer-smart-tab:dwim-right)
+  (define-key parinfer-mode-map (kbd "M-{") 'paredit-backward-slurp-sexp)
+  (define-key parinfer-mode-map (kbd "M-}") 'paredit-forward-slurp-sexp)
+  (define-key parinfer-mode-map (kbd "M-j") 'paredit-join-sexps)
   (define-key parinfer-region-mode-map (kbd "<tab>") 'parinfer-smart-tab:dwim-right)
 
   (parinfer-strategy-add 'instantly
@@ -171,12 +181,6 @@
           (backward-char 1)
           (beginning-of-line))))
 
-  ;; (add-hook 'clojure-mode-hook #'lispyville-mode)
-  ;; (add-hook 'clojure-mode-hook #'paredit-mode)
-  ;; (add-hook 'clojure-mode-hook #'lispy-mode)
-  ;; (add-hook 'lispy-mode-hook #'lispyville-mode)
-  ;; (lispy-set-key-theme '(lispy c-digits additional))
-  ;; (define-key 'lispyville-mode-map (kbd "M-j"))
   (define-key global-map (kbd "C-x 1") 'delete-other-windows)
 
   (load-file "~/.spacemacs.d/modeline.el")
