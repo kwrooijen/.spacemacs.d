@@ -211,15 +211,30 @@
     (define-key parinfer-region-mode-map (kbd "<backtab>") 'parinfer-smart-tab:dwim-left)
     (define-key parinfer-region-mode-map (kbd "<tab>") 'parinfer-smart-tab:dwim-right))
 
+  (defun my-clojure-mode-hook ()
+    (when (equal "(ns " (buffer-substring-no-properties 1 5))
+      (save-excursion
+        (beginning-of-buffer)
+        (hs-hide-block))))
+
   (require 'clojure-mode)
   (define-key clojure-mode-map (kbd "M-q") 'my-parinfer-toggle-mode)
   (define-key emacs-lisp-mode-map (kbd "M-q") 'my-parinfer-toggle-mode)
 
   (add-hook 'parinfer-mode-hook 'my-parinfer-mode-hook)
+  (add-hook 'clojure-mode-hook 'my-clojure-mode-hook)
 
   (define-key global-map (kbd "C-x 1") 'delete-other-windows)
 
   (load-file "~/.spacemacs.d/modeline.el")
+
+  (spacemacs/set-leader-keys
+    "xht" 'hs-toggle-hiding
+    "xhh" 'hs-hiding-block
+    "xhs" 'hs-show-block
+    "xha" 'hs-show-all
+    "xhA" 'hs-hide-all
+    "xhl" 'hs-hide-level)
 
   ;; Fix dired buffer issues
   (setq persp-set-frame-buffer-predicate nil)
