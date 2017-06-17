@@ -130,6 +130,8 @@
         spaceline-info-mode t
         x-select-enable-clipboard nil)
 
+  (fringe-mode '(nil . 0))
+
   ;; Parinfer
 
   (require 'parinfer)

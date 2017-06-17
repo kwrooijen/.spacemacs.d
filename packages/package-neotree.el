@@ -1,5 +1,8 @@
+(require 'neotree)
+
 (add-hook 'neotree-mode-hook (lambda ()
                                (setq-default cursor-in-non-selected-windows nil)
+                               (set-window-fringes (get-buffer-window " *NeoTree*") 0 0 nil)
                                (defun neotree-refresh (&optional is-auto-refresh)
                                  "Refresh the NeoTree buffer."
                                  (interactive)
@@ -19,9 +22,12 @@
                                        (recenter)
                                        (hl-line-mode t)
                                        (internal-show-cursor (get-buffer-window " *NeoTree*") nil)
+                                       (set-window-fringes (get-buffer-window " *NeoTree*") 0 0 nil)
                                        (when (or is-auto-refresh neo-toggle-window-keep-p)
                                          (select-window cw))))))))
 
+(add-hook 'minibuffer-setup-hook (lambda ()
+                                   (set-window-fringes (selected-window) 0 0 nil)))
 
 (defun update-neo-tree-for-template (fun)
   `(defadvice ,fun (after ,fun activate)
