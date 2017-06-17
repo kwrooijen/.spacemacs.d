@@ -32,7 +32,21 @@
             shell-protect-eshell-prompt t)
      ;; spell-checking
      version-control)
-   dotspacemacs-additional-packages '(solaire-mode all-the-icons key-chord scss-mode uuidgen simpleclip parinfer lispy lispyville rainbow-mode powerline string-inflection evil-anzu)
+   dotspacemacs-additional-packages '(solaire-mode
+                                      all-the-icons
+                                      key-chord
+                                      scss-mode
+                                      uuidgen
+                                      simpleclip
+                                      parinfer
+                                      lispy
+                                      lispyville
+                                      rainbow-mode
+                                      powerline
+                                      flycheck-clojure
+                                      flycheck-pos-tip
+                                      string-inflection
+                                      evil-anzu)
    dotspacemacs-excluded-packages '(evil-escape linum multiple-cursors spaceline)
    dotspacemacs-delete-orphan-packages t))
 
@@ -143,8 +157,17 @@
         '(defaults pretty-parens evil
            lispy paredit smart-tab smart-yank))
 
+  (eval-after-load 'flycheck '(flycheck-clojure-setup))
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (eval-after-load 'flycheck
+    '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+
+  (add-hook 'cider-mode-hook
+            (lambda () (setq next-error-function #'flycheck-next-error-function)))
+
   (add-hook 'clojure-mode-hook #'turn-off-smartparens-mode)
   (add-hook 'clojure-mode-hook #'parinfer-mode)
+  (add-hook 'clojure-mode-hook #'flycheck-mode)
 
   (add-hook 'emacs-lisp-mode-hook #'turn-off-smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
@@ -278,7 +301,7 @@
  '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (org-plus-contrib parinfer auto-auto-indent flycheck-clojure clojure-cheatsheet helm-clojuredocs auto-indent-mode evil-lispy solaire-mode string-inflection racket-mode faceup orgit sublimity mini-header-line dired+ vline winum fuzzy flycheck-credo evil-multiedit doom-themes powerline alert log4e gntp org markdown-mode skewer-mode simple-httpd lispy zoutline swiper ivy js2-mode parent-mode projectile request haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck flx magit git-commit with-editor smartparens iedit anzu evil goto-chg f json-mode tablist magit-popup docker-tramp json-snatcher json-reformat diminish web-completion-data dash-functional tern pos-tip hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue clojure-mode rust-mode bind-map bind-key yasnippet packed company dash elixir-mode pkg-info epl ace-window helm avy helm-core async auto-complete popup package-build rainbow-mode zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit spacemacs-theme spaceline smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters racer quelpa pug-mode popwin persp-mode pcre2el paradox org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode lispyville linum-relative link-hint less-css-mode key-chord js2-refactor js-doc info+ indent-guide ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav dumb-jump dockerfile-mode docker diff-hl define-word company-web company-tern company-statistics company-quickhelp column-enforce-mode coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu cargo auto-yasnippet auto-highlight-symbol auto-compile alchemist adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
+    (elein org-plus-contrib parinfer auto-auto-indent flycheck-clojure clojure-cheatsheet helm-clojuredocs auto-indent-mode evil-lispy solaire-mode string-inflection racket-mode faceup orgit sublimity mini-header-line dired+ vline winum fuzzy flycheck-credo evil-multiedit doom-themes powerline alert log4e gntp org markdown-mode skewer-mode simple-httpd lispy zoutline swiper ivy js2-mode parent-mode projectile request haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck flx magit git-commit with-editor smartparens iedit anzu evil goto-chg f json-mode tablist magit-popup docker-tramp json-snatcher json-reformat diminish web-completion-data dash-functional tern pos-tip hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue clojure-mode rust-mode bind-map bind-key yasnippet packed company dash elixir-mode pkg-info epl ace-window helm avy helm-core async auto-complete popup package-build rainbow-mode zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit spacemacs-theme spaceline smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters racer quelpa pug-mode popwin persp-mode pcre2el paradox org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode lispyville linum-relative link-hint less-css-mode key-chord js2-refactor js-doc info+ indent-guide ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav dumb-jump dockerfile-mode docker diff-hl define-word company-web company-tern company-statistics company-quickhelp column-enforce-mode coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu cargo auto-yasnippet auto-highlight-symbol auto-compile alchemist adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(vc-annotate-background "#1B2229")
  '(vc-annotate-color-map
