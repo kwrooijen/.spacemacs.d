@@ -122,6 +122,7 @@
         neo-persist-show nil
         neo-show-hidden-files nil
         neo-smart-open nil
+        neo-theme 'icons
         projectile-enable-caching t
         projectile-use-git-grep t
         scroll-error-top-bottom t
@@ -211,11 +212,15 @@
     (define-key parinfer-region-mode-map (kbd "<backtab>") 'parinfer-smart-tab:dwim-left)
     (define-key parinfer-region-mode-map (kbd "<tab>") 'parinfer-smart-tab:dwim-right))
 
+  (defun clj-hide-namespace ()
+    (interactive)
+    (save-excursion
+      (beginning-of-buffer)
+      (hs-hide-block)))
+
   (defun my-clojure-mode-hook ()
     (when (equal "(ns " (buffer-substring-no-properties 1 5))
-      (save-excursion
-        (beginning-of-buffer)
-        (hs-hide-block))))
+      (clj-hide-namespace)))
 
   (require 'clojure-mode)
   (define-key clojure-mode-map (kbd "M-q") 'my-parinfer-toggle-mode)
@@ -235,6 +240,9 @@
     "xha" 'hs-show-all
     "xhA" 'hs-hide-all
     "xhl" 'hs-hide-level)
+
+  (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
+    "n" 'clj-hide-namespace)
 
   ;; Fix dired buffer issues
   (setq persp-set-frame-buffer-predicate nil)
