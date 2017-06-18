@@ -44,4 +44,17 @@
          (package-requires (-map 'require-template package-symbols)))
     `(progn ,@package-requires)))
 
+(defvar phoenix-last-dir nil)
+
+(defun start-phoenix-server ()
+  (interactive)
+  (let* ((dir (read-directory-name "Phoenix Server: " phoenix-last-dir))
+         (default-directory dir))
+    (when dir
+      (setq phoenix-last-dir dir)
+      (spacemacs/shell-pop-eshell 123)
+      (rename-buffer "*Phoenix Server*" t)
+      (insert "iex -S mix phoenix.server")
+      (eshell-send-input))))
+
 (provide 'functions)

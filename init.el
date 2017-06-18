@@ -270,7 +270,10 @@
   (setq dotspacemacs-mode-line-unicode-symbols nil)
   (setq ediff-window-setup-function 'ediff-setup-windows-default)
 
-  (load-file "~/.spacemacs.d/modeline.el"))
+  (load-file "~/.spacemacs.d/modeline.el")
+
+  (when (file-exists-p "~/.spacemacs.d/variables.el")
+    (load-file "~/.spacemacs.d/variables.el")))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
