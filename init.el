@@ -130,14 +130,6 @@
         helm-make-comint t
         helm-make-named-buffer t
         indent-buffer-modes '(scss-mode)
-        neo-auto-indent-point nil
-        neo-dont-be-alone nil
-        neo-modern-sidebar nil
-        neo-persist-show nil
-        neo-show-hidden-files nil
-        neo-smart-open nil
-        neo-theme 'icons
-        neo-force-change-root t
         projectile-enable-caching t
         projectile-use-git-grep t
         scroll-error-top-bottom t

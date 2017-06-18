@@ -1,5 +1,14 @@
 (require 'neotree)
 
+(setq neo-auto-indent-point nil
+      neo-dont-be-alone nil
+      neo-modern-sidebar nil
+      neo-persist-show nil
+      neo-show-hidden-files nil
+      neo-smart-open nil
+      neo-theme 'icons
+      neo-force-change-root t)
+
 (add-hook 'neotree-mode-hook
           (lambda ()
             (setq-default cursor-in-non-selected-windows nil)
