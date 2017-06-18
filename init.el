@@ -143,7 +143,8 @@
         scroll-error-top-bottom t
         spaceline-helm-mode t
         spaceline-info-mode t
-        x-select-enable-clipboard nil)
+        x-select-enable-clipboard nil
+        shell-pop-full-span nil)
 
   (fringe-mode '(nil . 0))
 
