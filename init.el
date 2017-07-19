@@ -139,6 +139,8 @@
         x-select-enable-clipboard nil
         shell-pop-full-span nil)
 
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+
   (fringe-mode '(nil . 0))
 
   (define-key global-map (kbd "C-x 1") 'delete-other-windows)
