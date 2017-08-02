@@ -24,10 +24,16 @@
 (add-hook 'clojure-mode-hook #'turn-off-smartparens-mode)
 (add-hook 'clojure-mode-hook #'flycheck-mode)
 
+(define-key clojure-mode-map (kbd "M-:") 'clojure-eval-expression)
+
 (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
   "n" 'clj-hide-namespace
   "c" 'clojure-cheatsheet
   "\"" 'cider-figwheel-repl)
+
+(defun clojure-eval-expression (input)
+  (interactive "sEval: ")
+  (cider-interactive-eval input))
 
 ;; ClojureScript
 
