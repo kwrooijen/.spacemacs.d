@@ -18,8 +18,6 @@
 
 (defun evil-normal-state-and-save ()
   (interactive)
-  (when parinfer-mode
-    (parinfer--invoke-parinfer-instantly))
   (evil-normal-state)
   (save-buffer))
 
