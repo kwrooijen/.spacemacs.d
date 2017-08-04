@@ -1,43 +1,20 @@
 ;; Lispy
-(require 'evil-lispy)
 (require 'lispyville)
-(add-hook 'evil-lispy-mode-hook #'lispyville-mode)
-(add-hook 'emacs-lisp-mode-hook #'evil-lispy-mode)
-(add-hook 'clojure-mode-hook #'evil-lispy-mode)
+(require 'lispy)
+(add-hook 'lispy-mode-hook #'lispyville-mode)
+(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+(add-hook 'clojure-mode-hook #'lispy-mode)
 
-(evil-define-key 'normal evil-lispy-mode-map
+(evil-define-key 'normal lispy-mode-map
   "x" #'lispy-delete)
 
-(evil-define-key 'insert evil-lispy-mode-map
+(evil-define-key 'insert lispy-mode-map
   "[" #'lispy-brackets)
 
-(define-key evil-lispy-mode-map (kbd "M-a") 'evil-lispy/enter-state-left)
-(define-key evil-lispy-mode-map (kbd "C-S") 'lispy-unstringify)
-(define-key lispyville-mode-map (kbd "M-w") 'lispyville-yank)
-(define-key lispy-mode-map (kbd "i") 'lispy-tab)
-(define-key lispy-mode-map (kbd "f") 'lispy-flow)
-(define-key lispy-mode-map (kbd "d") 'special-lispy-different)
-(define-key lispy-mode-map (kbd "o") 'special-lispy-other-mode)
-(define-key lispy-mode-map (kbd "]") 'special-lispy-slurp)
-(define-key lispy-mode-map (kbd "[") 'special-lispy-barf)
-(define-key lispy-mode-map (kbd "A") 'evil-lispy-ace-symbol-replace)
-(define-key lispy-mode-map (kbd "H") 'special-lispy-move-left)
-(define-key lispy-mode-map (kbd "J") 'special-lispy-down-slurp)
-(define-key lispy-mode-map (kbd "K") 'special-lispy-up-slurp)
-(define-key lispy-mode-map (kbd "L") 'special-lispy-move-right)
-(define-key lispy-mode-map (kbd "I") 'evil-insert-state)
-(define-key lispy-mode-map (kbd "T") 'lispy-global-teleport)
-(define-key lispy-mode-map (kbd "M-i") 'tab-to-tab-stop)
-
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (define-key lispy-mode-map (kbd "e") 'cider-eval-sexp-at-point)))
-
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (define-key lispy-mode-map (kbd "e") 'lispy-eval)))
-
-(defadvice lispy-bind-variable (after lispy-bind-variable activate)
+(defun lispy-left-insert ()
+  (interactive)
+  (when (not (eql 40 (char-after)))
+    (lispy-left 1))
   (evil-insert-state 1))
 
 (defun lispy-global-teleport (arg)
@@ -45,13 +22,31 @@
   (let ((lispy-teleport-global t))
     (lispy-teleport arg)))
 
-(defun evil-lispy-ace-symbol-replace (arg)
-  "Jump to a symbol withing the current sexp and delete it.
-Sexp is obtained by exiting the list ARG times."
-  (interactive "p")
-  (lispy-ace-symbol arg)
-  (when (region-active-p)
-    (lispy-delete 1)
-    (evil-insert-state)))
+(eval-after-load "lispy"
+  `(progn
+     (define-key lispyville-mode-map (kbd "M-w") 'lispyville-yank)
+     (define-key lispy-mode-map (kbd "M-a") 'lispy-left-insert)
+     (define-key lispy-mode-map (kbd "C-S") 'lispy-unstringify)
+     (define-key lispy-mode-map (kbd "M-i") 'tab-to-tab-stop)
+     (lispy-define-key lispy-mode-map "]" 'special-lispy-slurp)
+     (lispy-define-key lispy-mode-map "[" 'special-lispy-barf)
+     (lispy-define-key lispy-mode-map "A" 'lispy-ace-symbol-replace)
+     (lispy-define-key lispy-mode-map "H" 'special-lispy-move-left)
+     (lispy-define-key lispy-mode-map "J" 'special-lispy-down-slurp)
+     (lispy-define-key lispy-mode-map "K" 'special-lispy-up-slurp)
+     (lispy-define-key lispy-mode-map "L" 'special-lispy-move-right)
+     (lispy-define-key lispy-mode-map "I" 'evil-insert-state)
+     (lispy-define-key lispy-mode-map "T" 'lispy-global-teleport)))
+
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (lispy-define-key lispy-mode-map (kbd "e") 'cider-eval-sexp-at-point)))
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (lispy-define-key lispy-mode-map (kbd "e") 'lispy-eval)))
+
+(defadvice lispy-bind-variable (after lispy-bind-variable activate)
+  (evil-insert-state 1))
 
 (provide 'package-lispy)

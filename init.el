@@ -41,7 +41,6 @@
                                       simpleclip
                                       lispy
                                       lispyville
-                                      evil-lispy
                                       rainbow-mode
                                       powerline
                                       flycheck-clojure
