@@ -3,6 +3,7 @@
 (bind-key* "C-S-X" 'simpleclip-cut)
 (bind-key* "M-u" 'undo-tree-redo)
 (bind-key* "M-+" 'align-regexp)
+(bind-key* "M-%" 'anzu-query-replace)
 (bind-key* "M-C" 'capitalize-previous-word)
 (bind-key* "M-1" 'winum-select-window-1)
 (bind-key* "M-2" 'winum-select-window-2)
@@ -15,6 +16,7 @@
 (bind-key* "M-9" 'winum-select-window-9)
 
 (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
+(evil-define-key 'insert company-active-map (kbd "C-k") 'company-select-previous)
 
 (evil-define-key 'normal helm-map (kbd "<RET>") 'my/helm-exit-minibuffer)
 (key-chord-define-global "xs" 'evil-normal-state-and-save)

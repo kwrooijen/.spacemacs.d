@@ -29,6 +29,14 @@
 (define-key lispy-mode-map (kbd "T") 'lispy-global-teleport)
 (define-key lispy-mode-map (kbd "M-i") 'tab-to-tab-stop)
 
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (define-key lispy-mode-map (kbd "e") 'cider-eval-sexp-at-point)))
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (define-key lispy-mode-map (kbd "e") 'lispy-eval)))
+
 (defadvice lispy-bind-variable (after lispy-bind-variable activate)
   (evil-insert-state 1))
 
