@@ -54,6 +54,17 @@
     (lispy-different)
     (lispy-slurp 1)))
 
+(defun lispy-minibuffer-eval (arg)
+  (interactive "P")
+  (pcase major-mode
+    ('emacs-lisp-mode (lispy-eval arg))
+    ('clojure-mode (cider-eval-sexp-at-point arg))))
+
+(defun lispy-global-ace-paren ()
+  (interactive)
+  (lispy-ace-paren t)
+  (evil-insert-state 1))
+
 (eval-after-load "lispy"
   `(progn
      (define-key lispyville-mode-map (kbd "M-w") 'lispyville-yank)
@@ -61,8 +72,10 @@
      (define-key lispy-mode-map (kbd "M-A") 'lispy-beginning-of-defun-insert)
      (define-key lispy-mode-map (kbd "C-S") 'lispy-unstringify)
      (define-key lispy-mode-map (kbd "M-i") 'tab-to-tab-stop)
+     (define-key lispy-mode-map (kbd "M-q") 'lispy-global-ace-paren)
      (lispy-define-key lispy-mode-map "M-]" 'lispy-reverse-slurp)
      (lispy-define-key lispy-mode-map "o" 'evil-open-below)
+     (lispy-define-key lispy-mode-map "e" 'lispy-minibuffer-eval)
      (lispy-define-key lispy-mode-map "x" 'lispy-delete)
      (lispy-define-key lispy-mode-map "]" 'lispy-slurp)
      (lispy-define-key lispy-mode-map "A" 'lispy-ace-symbol-replace)
@@ -72,14 +85,6 @@
      (lispy-define-key lispy-mode-map "L" 'special-lispy-move-right)
      (lispy-define-key lispy-mode-map "I" 'evil-insert-state)
      (lispy-define-key lispy-mode-map "T" 'lispy-global-teleport)))
-
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (lispy-define-key lispy-mode-map (kbd "e") 'cider-eval-sexp-at-point)))
-
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (lispy-define-key lispy-mode-map (kbd "e") 'lispy-eval)))
 
 (defadvice lispy-bind-variable (after lispy-bind-variable activate)
   (evil-insert-state 1))
