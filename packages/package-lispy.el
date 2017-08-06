@@ -9,6 +9,9 @@
   "[" #'lispy-brackets-or-barf)
 
 (evil-define-key 'insert lispy-mode-map
+  "]" #'lispy-slurp)
+
+(evil-define-key 'insert lispy-mode-map
   (kbd "M-[") #'lispy-wrap-brackets-or-reverse-barf)
 
 (defun lispy--mode-p ()
@@ -65,6 +68,12 @@
   (lispy-ace-paren t)
   (evil-insert-state 1))
 
+(defun lispy-o ()
+  (interactive)
+  (when (lispy-left-p)
+    (lispy-different))
+  (lispy-newline-and-indent-plain))
+
 (eval-after-load "lispy"
   `(progn
      (define-key lispyville-mode-map (kbd "M-w") 'lispyville-yank)
@@ -74,7 +83,7 @@
      (define-key lispy-mode-map (kbd "M-i") 'tab-to-tab-stop)
      (define-key lispy-mode-map (kbd "M-q") 'lispy-global-ace-paren)
      (lispy-define-key lispy-mode-map "M-]" 'lispy-reverse-slurp)
-     (lispy-define-key lispy-mode-map "o" 'evil-open-below)
+     (lispy-define-key lispy-mode-map "o" 'lispy-o)
      (lispy-define-key lispy-mode-map "e" 'lispy-minibuffer-eval)
      (lispy-define-key lispy-mode-map "x" 'lispy-delete)
      (lispy-define-key lispy-mode-map "]" 'lispy-slurp)
