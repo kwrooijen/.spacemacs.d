@@ -23,13 +23,14 @@
 (add-hook 'clojure-mode-hook 'clj-hide-namespace)
 (add-hook 'clojure-mode-hook #'turn-off-smartparens-mode)
 (add-hook 'clojure-mode-hook #'flycheck-mode)
+(add-hook 'clojure-mode-hook #'rainbow-delimiters-mode-disable)
+(add-hook* 'clojure-mode-hook (global-highlight-parentheses-mode -1))
 
 (define-key clojure-mode-map (kbd "M-:") 'clojure-eval-expression)
 
 (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
   "n" 'clj-hide-namespace
-  "c" 'clojure-cheatsheet
-  "\"" 'cider-figwheel-repl)
+  "c" 'clojure-cheatsheet)
 
 (defun clojure-eval-expression (input)
   (interactive "sEval: ")
@@ -43,7 +44,7 @@
   (with-current-buffer (cider-current-repl-buffer)
     (goto-char (point-max))
     (insert "(require 'figwheel-sidecar.repl-api)
-             (figwheel-sidecar.repl-api/start-figwheel!) ; idempotent
+             (figwheel-sidecar.repl-api/start-figwheel!)
              (figwheel-sidecar.repl-api/cljs-repl)")
     (cider-repl-return)))
 

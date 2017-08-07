@@ -98,4 +98,7 @@
 (defadvice lispy-bind-variable (after lispy-bind-variable activate)
   (evil-insert-state 1))
 
+(defadvice special-lispy-delete (after special-lispy-delete activate)
+  (lispy-left-insert))
+
 (provide 'package-lispy)
