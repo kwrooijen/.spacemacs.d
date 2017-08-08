@@ -3,7 +3,8 @@
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(html
+   '(sql
+     html
      c-c++
      dash
      (auto-completion :variables
