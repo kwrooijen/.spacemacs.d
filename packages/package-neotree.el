@@ -9,89 +9,86 @@
       neo-theme 'icons
       neo-force-change-root t)
 
+(defvar neo--ignored-list
+  '(minibuffer-inactive-mode
+    helm-major-mode
+    messages-buffer-mode
+    spacemacs-buffer-mode
+    help-mode
+    eshell-mode
+    fundamental-mode
+    magit-status-mode
+    neotree-mode
+    Buffer-menu-mode))
+
+(defvar neo--allowed-command-list
+  '(helm-ff-RET
+    ido-exit-minibuffer))
+
+(defvar neo--allowed-command-list-no-delay
+  '(winum-select-window-0
+    winum-select-window-1
+    winum-select-window-2
+    winum-select-window-3
+    winum-select-window-4
+    winum-select-window-5
+    winum-select-window-6
+    winum-select-window-7
+    winum-select-window-8
+    winum-select-window-9))
+
+(defun unix-timestamp ()
+  (read (format-time-string "%s")))
+
+(defvar neo--current-buffer nil)
+
+(defvar neo--last-time (unix-timestamp))
+
+(defvar neo--debug nil)
+
+(defvar neo--delay 1)
+
 (add-hook 'neotree-mode-hook
           (lambda ()
-            (setq-default cursor-in-non-selected-windows nil)
-            (set-window-fringes (get-buffer-window " *NeoTree*") 0 0 nil)
+            (with-current-buffer (get-buffer neo-buffer-name)
+              (setq-default cursor-in-non-selected-windows nil)
+              (set-window-fringes (get-buffer-window neo-buffer-name) 0 0 nil))
 
+            ;; Remove NeoTree Banner
             (defun neo-buffer--insert-banner ())
 
+            ;; Add ONLY project base name. On top of neotree
             (defun neo-buffer--insert-root-entry (node)
               (let* ((path (split-string node "/"))
                      (path (remove-if (lambda (x) (equal "" x)) path))
                      (path (car (last path))))
                 (neo-buffer--insert-with-face (or path "NeoTree")
                                               'neo-root-dir-face)
-                (neo-buffer--newline-and-begin)))
+                (neo-buffer--newline-and-begin)))))
 
-            (defun neotree-refresh (&optional is-auto-refresh)
-              "Refresh the NeoTree buffer."
-              (interactive)
-              (if (eq (current-buffer) (neo-global--get-buffer))
-                  (neo-buffer--refresh t)
-                (save-excursion
-                  (let ((cw (selected-window)))  ;; save current window
-                    (if is-auto-refresh
-                        (let ((origin-buffer-file-name (buffer-file-name)))
-                          (when (and (fboundp 'projectile-project-p)
-                                     (projectile-project-p)
-                                     (fboundp 'projectile-project-root))
-                            (neo-global--open-dir (projectile-project-root))
-                            (neotree-find (projectile-project-root)))
-                          (neotree-find origin-buffer-file-name))
-                      (neo-buffer--refresh t t))
-                    (recenter)
-                    (hl-line-mode t)
-                    (internal-show-cursor (get-buffer-window " *NeoTree*") nil)
-                    (set-window-fringes (get-buffer-window " *NeoTree*") 0 0 nil)
-                    (when (or is-auto-refresh neo-toggle-window-keep-p)
-                      (select-window cw))))))))
+(defun neo--allowed-command? ()
+  (or (member this-command neo--allowed-command-list-no-delay)
+      (and
+       (member this-command neo--allowed-command-list)
+       (< (+ neo--delay neo--last-time) (unix-timestamp)))))
 
-(defun update-neo-tree-for-template (fun)
-  `(defadvice ,fun (after ,fun activate)
-     (neotree-refresh t)))
-
-(defmacro update-neo-tree-for (&rest funs)
-  (let ((forms (mapcar 'update-neo-tree-for-template funs)))
-    `(progn ,@forms)))
-
-
-(defadvice spacemacs/persp-switch-to-1 (after spacemacs/persp-switch-to-1-after activate)
-  (kill-buffer " *NeoTree*")
-  (neotree-refresh t))
-
-(defadvice spacemacs/persp-switch-to-2 (after spacemacs/persp-switch-to-2-after activate)
-  (kill-buffer " *NeoTree*")
-  (neotree-refresh t))
-
-(defadvice spacemacs/persp-switch-to-3 (after spacemacs/persp-switch-to-3-after activate)
-  (kill-buffer " *NeoTree*")
-  (neotree-refresh t))
-
-(defadvice spacemacs/persp-switch-to-4 (after spacemacs/persp-switch-to-4-after activate)
-  (kill-buffer " *NeoTree*")
-  (neotree-refresh t))
-
-(defadvice spacemacs/persp-switch-to-5 (after spacemacs/persp-switch-to-5-after activate)
-  (kill-buffer " *NeoTree*")
-  (neotree-refresh t))
-
-(update-neo-tree-for helm-projectile-find-file
-                     helm-projectile-switch-project
-                     helm-mini
-                     ido-kill-buffer
-                     spacemacs/helm-find-files
-                     winner-undo
-                     winner-redo
-                     dired-find-file
-                     winum-select-window-1
-                     winum-select-window-2
-                     winum-select-window-3
-                     winum-select-window-4
-                     winum-select-window-5
-                     winum-select-window-6
-                     winum-select-window-7
-                     winum-select-window-8
-                     winum-select-window-9)
+;; Refresh neotree on buffer change
+(defadvice select-window (after select-window activate)
+  (when (and (projectile-project-p)
+             (not (eql (current-buffer) neo--current-buffer))
+             (not (member major-mode neo--ignored-list))
+             (neo--allowed-command?))
+    (setq neo--last-time (unix-timestamp))
+    (setq neo--current-buffer (current-buffer))
+    (when neo--debug
+      (message (format "MAJOR MODE: %s | BUFFER: %s | THIS COMMAND: %s"
+                       major-mode
+                       (buffer-name)
+                       this-command)))
+    (neotree-refresh t)
+    (with-current-buffer (get-buffer neo-buffer-name)
+      (hl-line-mode t)
+      (internal-show-cursor (get-buffer-window neo-buffer-name) nil)
+      (set-window-fringes (get-buffer-window neo-buffer-name) 0 0 nil))))
 
 (provide 'package-neotree)
