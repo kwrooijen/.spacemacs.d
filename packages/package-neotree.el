@@ -76,12 +76,11 @@
 
 (defun neo--allowed-command? ()
   (or (member this-command neo--allowed-command-list-no-delay)
-      (and
-       (member this-command neo--allowed-command-list)
-       (< (+ neo--delay neo--last-time) (unix-timestamp)))))
+      (and (member this-command neo--allowed-command-list)
+           (< (+ neo--delay neo--last-time) (unix-timestamp)))))
 
 ;; Refresh neotree on buffer change
-(defadvice select-window (after select-window activate)
+(defadvice select-window (after neo--autorefresh activate)
   (when (and (get-buffer-window neo-buffer-name)
              (projectile-project-p)
              (not (eql (current-buffer) neo--current-buffer))
