@@ -82,7 +82,8 @@
 
 ;; Refresh neotree on buffer change
 (defadvice select-window (after select-window activate)
-  (when (and (projectile-project-p)
+  (when (and (get-buffer-window neo-buffer-name)
+             (projectile-project-p)
              (not (eql (current-buffer) neo--current-buffer))
              (not (member major-mode neo--ignored-list))
              (neo--allowed-command?))
