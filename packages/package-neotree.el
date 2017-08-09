@@ -1,4 +1,12 @@
 (require 'neotree)
+(require 'all-the-icons)
+
+(add-to-list 'all-the-icons-icon-alist
+             '("\\.db$" all-the-icons-octicon "database" :height 1.0 :v-adjust 0.0 :face all-the-icons-green))
+(add-to-list 'all-the-icons-icon-alist
+             '("\\.edn$" all-the-icons-alltheicon "clojure-line" :height 1.0 :v-adjust 0.0 :face all-the-icons-yellow))
+(add-to-list 'all-the-icons-dir-icon-alist
+             '("test" all-the-icons-octicon "file-directory" :height 1.0 :v-adjust -0.1))
 
 (setq neo-auto-indent-point nil
       neo-dont-be-alone nil
