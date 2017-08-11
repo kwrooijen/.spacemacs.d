@@ -74,6 +74,11 @@
     (lispy-different))
   (lispy-newline-and-indent-plain))
 
+(defun lispy-maybe-delete ()
+  (interactive)
+  (when (lispy--mode-p)
+    (lispy-delete 1)))
+
 (eval-after-load "lispy"
   `(progn
      (define-key lispyville-mode-map (kbd "M-w") 'lispyville-yank)
@@ -85,7 +90,7 @@
      (lispy-define-key lispy-mode-map "M-]" 'lispy-reverse-slurp)
      (lispy-define-key lispy-mode-map "o" 'lispy-o)
      (lispy-define-key lispy-mode-map "e" 'lispy-minibuffer-eval)
-     (lispy-define-key lispy-mode-map "x" 'lispy-delete)
+     (lispy-define-key lispy-mode-map "x" 'lispy-maybe-delete)
      (lispy-define-key lispy-mode-map "]" 'lispy-slurp)
      (lispy-define-key lispy-mode-map "A" 'lispy-ace-symbol-replace)
      (lispy-define-key lispy-mode-map "H" 'special-lispy-move-left)
