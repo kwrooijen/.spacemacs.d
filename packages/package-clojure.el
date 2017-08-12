@@ -2,7 +2,7 @@
 (require 'cider)
 
 (setq cider-auto-jump-to-error nil
-      cider-boot-parameters "trampoline repl -s -H :: wait")
+      cider-lein-parameters "trampoline repl :headless :host ::")
 
 (defun clj-hide-namespace ()
   (interactive)
@@ -37,16 +37,14 @@
   (cider-interactive-eval input))
 
 ;; ClojureScript
+(setq cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+           (figwheel-sidecar.repl-api/start-figwheel!)
+           (figwheel-sidecar.repl-api/cljs-repl)
+           (user/cljs-repl))")
 
-(defun cider-figwheel-repl ()
-  (interactive)
-  (save-some-buffers)
-  (with-current-buffer (cider-current-repl-buffer)
-    (goto-char (point-max))
-    (insert "(require 'figwheel-sidecar.repl-api)
-             (figwheel-sidecar.repl-api/start-figwheel!)
-             (figwheel-sidecar.repl-api/cljs-repl)")
-    (cider-repl-return)))
 
+(put-clojure-indent 'render 1)
+(put-clojure-indent 's/fdef 1)
 
 (provide 'package-clojure)

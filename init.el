@@ -140,7 +140,8 @@
         spaceline-helm-mode t
         spaceline-info-mode t
         x-select-enable-clipboard nil
-        shell-pop-full-span nil)
+        shell-pop-full-span nil
+        evil-want-fine-undo t)
 
   (add-hook 'after-init-hook #'global-flycheck-mode)
 
