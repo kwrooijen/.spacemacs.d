@@ -31,6 +31,8 @@
 ;; You can do similar with the minibuffer when it is activated:
 (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
 
+(add-hook 'helm-major-mode-hook #'solaire-mode)
+
 ;; To enable solaire-mode unconditionally for certain modes:
 (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
 (provide 'package-doom)

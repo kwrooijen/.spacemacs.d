@@ -1,5 +1,5 @@
-(defmacro add-hook* (mode fn)
-  `(add-hook ,mode (lambda () ,fn)))
+(defmacro add-hook* (mode &rest body)
+  `(add-hook ,mode (lambda () ,@body)))
 
 (defmacro ensure-clone (user project branch)
   (unless (file-exists-p (format "~/.spacemacs.d/%s" project))

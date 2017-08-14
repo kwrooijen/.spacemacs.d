@@ -20,11 +20,12 @@
 (add-hook* 'cider-mode-hook
            (setq next-error-function #'flycheck-next-error-function))
 
-(add-hook 'clojure-mode-hook 'clj-hide-namespace)
-(add-hook 'clojure-mode-hook #'turn-off-smartparens-mode)
-(add-hook 'clojure-mode-hook #'flycheck-mode)
-(add-hook 'clojure-mode-hook #'rainbow-delimiters-mode-disable)
-(add-hook* 'clojure-mode-hook (global-highlight-parentheses-mode -1))
+(add-hook* 'clojure-mode-hook
+           (clj-hide-namespace)
+           (turn-off-smartparens-mode)
+           (flycheck-mode)
+           (rainbow-delimiters-mode-disable)
+           (global-highlight-parentheses-mode -1))
 
 (define-key clojure-mode-map (kbd "M-:") 'clojure-eval-expression)
 
@@ -43,8 +44,9 @@
            (figwheel-sidecar.repl-api/cljs-repl)
            (user/cljs-repl))")
 
-
-(put-clojure-indent 'render 1)
-(put-clojure-indent 's/fdef 1)
+(define-clojure-indent
+  (render 1)
+  (s/fdef 1)
+  (dom/div 1))
 
 (provide 'package-clojure)

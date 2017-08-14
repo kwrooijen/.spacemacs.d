@@ -60,6 +60,7 @@
           (lambda ()
             (with-current-buffer (get-buffer neo-buffer-name)
               (setq-default cursor-in-non-selected-windows nil)
+              (setq-local mode-line-format nil)
               (set-window-fringes (get-buffer-window neo-buffer-name) 0 0 nil))
 
             ;; Remove NeoTree Banner
@@ -94,8 +95,10 @@
                        (buffer-name)
                        this-command)))
     (neotree-refresh t)
+    (set-window-fringes (minibuffer-window) 0 0 nil)
     (with-current-buffer (get-buffer neo-buffer-name)
       (hl-line-mode t)
+      (setq-local mode-line-format nil)
       (internal-show-cursor (get-buffer-window neo-buffer-name) nil)
       (set-window-fringes (get-buffer-window neo-buffer-name) 0 0 nil))))
 
