@@ -1,5 +1,5 @@
 (require 'doom-themes)
-
+(require 'helm-bookmark)
 ;;; Settings (defaults)
 (setq doom-enable-bold t    ; if nil, bolding are universally disabled
       doom-enable-italic t  ; if nil, italics are universally disabled
@@ -9,7 +9,7 @@
       doom-one-brighter-comments nil)
 
 ;; Load the theme (doom-one, doom-dark, etc.)
-(load-theme 'doom-one t)
+(load-theme 'doom-tomorrow-night t)
 
 ;; ;;; OPTIONAL
 ;; ;; brighter source buffers (that represent files)

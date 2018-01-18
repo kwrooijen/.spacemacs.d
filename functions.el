@@ -55,4 +55,9 @@
       (insert "iex -S mix phoenix.server")
       (eshell-send-input))))
 
+(defun platformio-device-monitor (arg)
+  ""
+  (interactive "P")
+  (platformio--exec "device monitor"))
+
 (provide 'functions)

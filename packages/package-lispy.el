@@ -4,6 +4,7 @@
 (add-hook 'lispy-mode-hook #'lispyville-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
 (add-hook 'clojure-mode-hook #'lispy-mode)
+(add-hook 'hy-mode-hook #'lispy-mode)
 
 (evil-define-key 'insert lispy-mode-map
   "[" #'lispy-brackets-or-barf)

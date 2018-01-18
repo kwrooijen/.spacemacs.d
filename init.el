@@ -10,6 +10,8 @@
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t)
      elixir
+     erlang
+     python
      elm
      lua
      javascript
@@ -50,7 +52,10 @@
                                       clojure-cheatsheet
                                       evil-anzu
                                       ov
-                                      deferred)
+                                      hy-mode
+                                      deferred
+                                      arduino-mode
+                                      platformio-mode)
    dotspacemacs-excluded-packages '(evil-escape linum multiple-cursors spaceline)
    dotspacemacs-delete-orphan-packages t))
 
@@ -177,44 +182,46 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
-   [("#1B2229" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#DFDFDF")])
+   ["#0d0d0d" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#c9b4cf" "#8abeb7" "#ffffff"])
  '(custom-safe-themes
    (quote
-    ("6b1e6953a08acf12843973ec25d69dbfa1a53d869f649dc991a56fbdf0d7eb9e" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ead76c417365064889c6552678e62a3982f9c6b359888dd7b2ba62efb9422b96" default)))
+    ("611e38c2deae6dcda8c5ac9dd903a356c5de5b62477469133c89b2785eb7a14d" "b81bfd85aed18e4341dbf4d461ed42d75ec78820a60ce86730fc17fc949389b2" "6b1e6953a08acf12843973ec25d69dbfa1a53d869f649dc991a56fbdf0d7eb9e" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ead76c417365064889c6552678e62a3982f9c6b359888dd7b2ba62efb9422b96" default)))
+ '(erlang-argument-indent 2)
+ '(erlang-indent-level 2)
  '(evil-want-Y-yank-to-eol t)
- '(fci-rule-color "#5B6268" t)
- '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
- '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
- '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
+ '(fci-rule-color "#5c5e5e" t)
+ '(jdee-db-active-breakpoint-face-colors (cons "#0d0d0d" "#41728e"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#0d0d0d" "#b5bd68"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#0d0d0d" "#5a5b5a"))
  '(org-ellipsis "  ")
  '(org-fontify-done-headline t)
  '(org-fontify-quote-and-verse-blocks t)
  '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (deferred markdown-preview-mode ov disaster company-c-headers cmake-mode clang-format cljr-helm elein parinfer auto-auto-indent flycheck-clojure clojure-cheatsheet helm-clojuredocs auto-indent-mode evil-lispy solaire-mode string-inflection racket-mode faceup orgit sublimity mini-header-line dired+ vline winum fuzzy flycheck-credo evil-multiedit doom-themes powerline alert log4e gntp org markdown-mode skewer-mode simple-httpd lispy zoutline swiper ivy js2-mode parent-mode projectile request haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck flx magit git-commit with-editor smartparens iedit anzu evil goto-chg f json-mode tablist magit-popup docker-tramp json-snatcher json-reformat diminish web-completion-data dash-functional tern pos-tip hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue clojure-mode rust-mode bind-map bind-key yasnippet packed company dash elixir-mode pkg-info epl ace-window helm avy helm-core async auto-complete popup package-build rainbow-mode zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit spacemacs-theme spaceline smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters racer quelpa pug-mode popwin persp-mode pcre2el paradox org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode lispyville linum-relative link-hint less-css-mode key-chord js2-refactor js-doc info+ indent-guide ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav dumb-jump dockerfile-mode docker diff-hl define-word company-web company-tern company-statistics company-quickhelp column-enforce-mode coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu cargo auto-yasnippet auto-highlight-symbol auto-compile alchemist adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
+    (erlang platformio-mode arduino-mode deferred markdown-preview-mode ov disaster company-c-headers cmake-mode clang-format cljr-helm elein parinfer auto-auto-indent flycheck-clojure clojure-cheatsheet helm-clojuredocs auto-indent-mode evil-lispy solaire-mode string-inflection racket-mode faceup orgit sublimity mini-header-line dired+ vline winum fuzzy flycheck-credo evil-multiedit doom-themes powerline alert log4e gntp org markdown-mode skewer-mode simple-httpd lispy zoutline swiper ivy js2-mode parent-mode projectile request haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck flx magit git-commit with-editor smartparens iedit anzu evil goto-chg f json-mode tablist magit-popup docker-tramp json-snatcher json-reformat diminish web-completion-data dash-functional tern pos-tip hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue clojure-mode rust-mode bind-map bind-key yasnippet packed company dash elixir-mode pkg-info epl ace-window helm avy helm-core async auto-complete popup package-build rainbow-mode zeal-at-point yaml-mode xterm-color ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit spacemacs-theme spaceline smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters racer quelpa pug-mode popwin persp-mode pcre2el paradox org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode lispyville linum-relative link-hint less-css-mode key-chord js2-refactor js-doc info+ indent-guide ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav dumb-jump dockerfile-mode docker diff-hl define-word company-web company-tern company-statistics company-quickhelp column-enforce-mode coffee-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu cargo auto-yasnippet auto-highlight-symbol auto-compile alchemist adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
- '(vc-annotate-background "#1B2229")
+ '(vc-annotate-background "#0d0d0d")
  '(vc-annotate-color-map
    (list
-    (cons 20 "#98be65")
-    (cons 40 "#b4be6c")
-    (cons 60 "#d0be73")
-    (cons 80 "#ECBE7B")
-    (cons 100 "#e6ab6a")
-    (cons 120 "#e09859")
-    (cons 140 "#da8548")
-    (cons 160 "#d38079")
-    (cons 180 "#cc7cab")
-    (cons 200 "#c678dd")
-    (cons 220 "#d974b7")
-    (cons 240 "#ec7091")
-    (cons 260 "#ff6c6b")
-    (cons 280 "#cf6162")
-    (cons 300 "#9f585a")
-    (cons 320 "#6f4e52")
-    (cons 340 "#5B6268")
-    (cons 360 "#5B6268")))
+    (cons 20 "#b5bd68")
+    (cons 40 "#c8c06c")
+    (cons 60 "#dcc370")
+    (cons 80 "#f0c674")
+    (cons 100 "#eab56d")
+    (cons 120 "#e3a366")
+    (cons 140 "#de935f")
+    (cons 160 "#d79e84")
+    (cons 180 "#d0a9a9")
+    (cons 200 "#c9b4cf")
+    (cons 220 "#ca9aac")
+    (cons 240 "#cb8089")
+    (cons 260 "#cc6666")
+    (cons 280 "#af6363")
+    (cons 300 "#936060")
+    (cons 320 "#765d5d")
+    (cons 340 "#5c5e5e")
+    (cons 360 "#5c5e5e")))
  '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
