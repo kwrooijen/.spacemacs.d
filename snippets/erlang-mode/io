@@ -2,4 +2,4 @@
 # name: io
 # key: io
 # --
-io:format("$1")$0
+io:format("$1"),$0
