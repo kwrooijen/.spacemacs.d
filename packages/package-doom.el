@@ -1,38 +1,38 @@
-(require 'doom-themes)
-(require 'helm-bookmark)
-;;; Settings (defaults)
-(setq doom-enable-bold t    ; if nil, bolding are universally disabled
-      doom-enable-italic t  ; if nil, italics are universally disabled
+;; (require 'doom-themes)
+;; (require 'helm-bookmark)
+;; ;;; Settings (defaults)
+;; (setq doom-enable-bold t    ; if nil, bolding are universally disabled
+;;       doom-enable-italic t  ; if nil, italics are universally disabled
 
-      ;; doom-one specific settings
-      doom-one-brighter-modeline nil
-      doom-one-brighter-comments nil)
+;;       ;; doom-one specific settings
+;;       doom-one-brighter-modeline nil
+;;       doom-one-brighter-comments nil)
 
-;; Load the theme (doom-one, doom-dark, etc.)
-(load-theme 'doom-tomorrow-night t)
+;; ;; Load the theme (doom-one, doom-dark, etc.)
+;; (load-theme 'doom-tomorrow-night t)
 
-;; ;;; OPTIONAL
-;; ;; brighter source buffers (that represent files)
-;; (add-hook 'find-file-hook 'doom-buffer-mode-maybe)
-;; ;; if you use auto-revert-mode
-;; (add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
-;; ;; you can brighten other buffers (unconditionally) with:
-;; (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
+;; ;; ;;; OPTIONAL
+;; ;; ;; brighter source buffers (that represent files)
+;; ;; (add-hook 'find-file-hook 'doom-buffer-mode-maybe)
+;; ;; ;; if you use auto-revert-mode
+;; ;; (add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
+;; ;; ;; you can brighten other buffers (unconditionally) with:
+;; ;; (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
 
 
-(require 'solaire-mode)
+;; (require 'solaire-mode)
 
-;; brighten buffers (that represent real files)
-(add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+;; ;; brighten buffers (that represent real files)
+;; (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
 
-;; ...if you use auto-revert-mode:
-(add-hook 'after-revert-hook #'turn-on-solaire-mode)
+;; ;; ...if you use auto-revert-mode:
+;; (add-hook 'after-revert-hook #'turn-on-solaire-mode)
 
-;; You can do similar with the minibuffer when it is activated:
-(add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+;; ;; You can do similar with the minibuffer when it is activated:
+;; (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
 
-(add-hook 'helm-major-mode-hook #'solaire-mode)
+;; (add-hook 'helm-major-mode-hook #'solaire-mode)
 
-;; To enable solaire-mode unconditionally for certain modes:
-(add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
+;; ;; To enable solaire-mode unconditionally for certain modes:
+;; (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
 (provide 'package-doom)

@@ -16,6 +16,7 @@
 (bind-key* "M-9" 'winum-select-window-9)
 
 (define-key evil-normal-state-map (kbd "<SPC>qq") 'undefined)
+(define-key evil-normal-state-map (kbd "q") 'evil-avy-goto-char)
 (evil-define-key 'insert company-active-map (kbd "C-k") 'company-select-previous)
 
 (evil-define-key 'normal helm-map (kbd "<RET>") 'my/helm-exit-minibuffer)

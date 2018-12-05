@@ -60,4 +60,10 @@
   (interactive "P")
   (platformio--exec "device monitor"))
 
+(defun change-language ()
+  (interactive)
+  (save-excursion
+    (call-interactively 'ispell-change-dictionary)
+    (flyspell-buffer)))
+
 (provide 'functions)
