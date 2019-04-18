@@ -12,13 +12,13 @@
       (beginning-of-buffer)
       (hs-hide-block))))
 
-(eval-after-load 'flycheck '(flycheck-clojure-setup))
+;; (eval-after-load 'flycheck '(flycheck-clojure-setup))
 
-(eval-after-load 'flycheck
-  '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+;; (eval-after-load 'flycheck
+;;   '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
-(add-hook* 'cider-mode-hook
-           (setq next-error-function #'flycheck-next-error-function))
+;; (add-hook* 'cider-mode-hook
+;;            (setq next-error-function #'flycheck-next-error-function))
 
 (add-hook* 'clojure-mode-hook
            (clj-hide-namespace)
@@ -48,5 +48,16 @@
   (render 1)
   (s/fdef 1)
   (dom/div 1))
+
+(defface paren-face
+  '((((class color) (background dark))
+     (:foreground "grey20"))
+    (((class color) (background light))
+     (:foreground "grey80")))
+  "Face used to dim parentheses.")
+
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (font-lock-add-keywords nil '((")" . 'paren-face)))))
 
 (provide 'package-clojure)

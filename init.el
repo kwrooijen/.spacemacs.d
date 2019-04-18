@@ -4,6 +4,8 @@
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
+     ruby
+     octave
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t)
      (shell :variables
@@ -11,7 +13,6 @@
             shell-default-position 'bottom
             shell-default-shell 'eshell
             shell-protect-eshell-prompt t)
-     ansible
      c-c++
      clojure
      csv
@@ -41,9 +42,9 @@
    dotspacemacs-additional-packages '(
                                       all-the-icons
                                       arduino-mode
-                                      clojure-cheatsheet
                                       deferred
                                       doom-modeline
+                                      doom-themes
                                       edit-indirect
                                       edts
                                       eldoc-eval
@@ -62,7 +63,6 @@
                                       scss-mode
                                       simpleclip
                                       solaire-mode
-                                      solarized-theme
                                       spray
                                       string-inflection
                                       uuidgen
@@ -74,7 +74,7 @@
                                       (multiple-cursors :location (recipe :fetcher github
                                                                           :repo "jacobono/multiple-cursors.el"
                                                                           :branch "evil-ways")))
-   dotspacemacs-excluded-packages '(evil-escape linum spaceline)
+   dotspacemacs-excluded-packages '(evil-escape linum spaceline org-projectile)
    dotspacemacs-delete-orphan-packages t))
 
 (defun dotspacemacs/init ()
@@ -87,10 +87,10 @@
                 dotspacemacs-startup-lists '(recents projects)
                 dotspacemacs-startup-recent-list-size 5
                 dotspacemacs-scratch-mode 'emacs-lisp-mode
-                dotspacemacs-themes '(solarized-dark)
+                dotspacemacs-themes '(doom-one)
                 dotspacemacs-colorize-cursor-according-to-state t
                 dotspacemacs-default-font '("Fira Mono"
-                                            :size 13
+                                            :size 10
                                             :weight bold
                                             :width normal)
                 dotspacemacs-leader-key "SPC"
@@ -136,11 +136,14 @@
 (defun dotspacemacs/user-config ()
   (require 'functions)
   (require 'keys)
-
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (load-my-packages)
 
-  (add-hook* 'prog-mode-hook (key-chord-mode 1))
-  (add-hook* 'isearch-mode-hook (key-chord-mode 1))
+  (when (eq system-type 'darwin)
+    (bind-key* "<s-return>" 'toggle-frame-fullscreen)
+    (bind-key* "s-a" 'lispy-left-insert))
+
+  (key-chord-mode 1)
 
   (setq alchemist-test--mode-name-face nil
         anzu-cons-mode-line-p nil
@@ -162,7 +165,6 @@
         scroll-error-top-bottom t
         spaceline-helm-mode t
         spaceline-info-mode t
-        x-select-enable-clipboard nil
         shell-pop-full-span nil
         evil-want-fine-undo t
         css-indent-offset 2
@@ -171,7 +173,8 @@
         spray-margin-top 5
         spray-wpm 600
         erlang-argument-indent 2
-        erlang-indent-level 2)
+        erlang-indent-level 2
+        ispell-program-name "aspell")
 
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (spacemacs/toggle-auto-fill-mode-on)
@@ -206,29 +209,9 @@
   (when (file-exists-p "~/.spacemacs.d/variables.el")
     (load-file "~/.spacemacs.d/variables.el"))
 
-  (doom-modeline-init)
-
-  (add-hook 'after-init-hook 'my-after-init-hook)
-
-  (require 'ansible-doc)
-
-  (use-package org-brain :ensure t
-    :init
-    (setq org-brain-path "~/Documents/Org/Brain")
-    ;; For Evil users
-    (with-eval-after-load 'evil
-      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
-    :config
-    (setq org-id-track-globally t)
-    (setq org-id-locations-file "~/.spacemacs.d/.org-id-locations")
-    ;; (push '("b" "Brain" plain (function org-brain-goto-end)
-    ;;         "* %i%?" :empty-lines 1)
-    ;;       'org-capture-templates)
-    (setq org-brain-visualize-default-choices 'all)
-    (setq org-brain-title-max-length 12))
-
-  (defun my-after-init-hook ()
-    (require 'edts-start)))
+  (require 'doom-modeline)
+  (doom-modeline-mode 1)
+  (setq doom-modeline-height 32))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -237,11 +220,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(js-indent-level 2)
  '(package-selected-packages
    (quote
-    (godot-gdscript org-category-capture alert log4e gntp skewer-mode simple-httpd lispy zoutline ivy js2-mode haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck magit git-commit ghub treepy graphql erlang eldoc-eval shrink-path json-mode tablist magit-popup docker-tramp json-snatcher json-reformat web-completion-data dash-functional tern restclient know-your-http-well pos-tip inflections edn multiple-cursors paredit peg cider queue clojure-mode markdown-mode anaconda-mode all-the-icons memoize company elixir-mode auto-complete faceup solarized-theme spaceline evil-escape zeal-at-point yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit string-inflection spray solaire-mode smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restclient-helm restart-emacs rainbow-mode rainbow-delimiters racket-mode racer pyvenv pytest pyenv-mode py-isort pug-mode powerline popwin platformio-mode pip-requirements persp-mode pcre2el paradox ov orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-restclient ob-http ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode live-py-mode lispyville linum-relative link-hint key-chord js2-refactor js-doc jinja2-mode indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flycheck-clojure flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav edts edit-indirect dumb-jump doom-modeline dockerfile-mode docker disaster diminish diff-hl define-word deferred cython-mode csv-mode company-web company-tern company-statistics company-restclient company-quickhelp company-c-headers company-ansible company-anaconda column-enforce-mode coffee-mode cmake-mode clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu cargo auto-yasnippet auto-compile arduino-mode ansible-doc ansible alchemist aggressive-indent adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
+    (doom-themes doom-theme-theme rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby swiper parent-mode projectile request flx highlight transient lv with-editor smartparens iedit anzu evil goto-chg undo-tree erc-terminal-notifier reformatter dash-at-point hydra sesman eval-sexp-fu rust-mode bind-map bind-key yasnippet auto-highlight-symbol packed spinner pythonic f s pkg-info epl ace-window helm avy helm-core async popup godot-gdscript org-category-capture alert log4e gntp skewer-mode simple-httpd lispy zoutline ivy js2-mode haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck magit git-commit ghub treepy graphql erlang eldoc-eval shrink-path json-mode tablist magit-popup docker-tramp json-snatcher json-reformat web-completion-data dash-functional tern restclient know-your-http-well pos-tip inflections edn multiple-cursors paredit peg cider queue clojure-mode markdown-mode anaconda-mode all-the-icons memoize company elixir-mode auto-complete faceup solarized-theme spaceline evil-escape zeal-at-point yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit string-inflection spray solaire-mode smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restclient-helm restart-emacs rainbow-mode rainbow-delimiters racket-mode racer pyvenv pytest pyenv-mode py-isort pug-mode powerline popwin platformio-mode pip-requirements persp-mode pcre2el paradox ov orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-restclient ob-http ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode live-py-mode lispyville linum-relative link-hint key-chord js2-refactor js-doc jinja2-mode indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flycheck-clojure flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav edts edit-indirect dumb-jump doom-modeline dockerfile-mode docker disaster diminish diff-hl define-word deferred cython-mode csv-mode company-web company-tern company-statistics company-restclient company-quickhelp company-c-headers company-ansible company-anaconda column-enforce-mode coffee-mode cmake-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu cargo auto-yasnippet auto-compile arduino-mode ansible-doc ansible alchemist aggressive-indent adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote
