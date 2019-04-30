@@ -31,7 +31,7 @@
 
 (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
   "n" 'clj-hide-namespace
-  "c" 'clojure-cheatsheet)
+  "c" 'clojure-view-cheatsheet)
 
 (defun clojure-eval-expression (input)
   (interactive "sEval: ")
@@ -58,6 +58,8 @@
 
 (add-hook 'clojure-mode-hook
           (lambda ()
-            (font-lock-add-keywords nil '((")" . 'paren-face)))))
+            (font-lock-add-keywords nil '((")" . 'paren-face)))
+            (font-lock-add-keywords nil '(("}" . 'paren-face)))
+            (font-lock-add-keywords nil '(("]" . 'paren-face)))))
 
 (provide 'package-clojure)
