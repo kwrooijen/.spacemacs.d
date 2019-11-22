@@ -1,9 +1,12 @@
+;; Debug Emacs freeze:
+;; kill -SIGUSR2 $emacs-pid
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
+     sql
      ruby
      octave
      (auto-completion :variables
@@ -23,7 +26,6 @@
      emacs-lisp
      erc
      erlang
-     git
      git
      html
      javascript
@@ -140,8 +142,7 @@
   (load-my-packages)
 
   (when (eq system-type 'darwin)
-    (bind-key* "<s-return>" 'toggle-frame-fullscreen)
-    (bind-key* "s-a" 'lispy-left-insert))
+    (bind-key* "<s-return>" 'toggle-frame-fullscreen))
 
   (key-chord-mode 1)
 
@@ -211,24 +212,35 @@
 
   (require 'doom-modeline)
   (doom-modeline-mode 1)
-  (setq doom-modeline-height 32))
+
+  (define-key global-map [menu-bar buffers] nil)
+  (define-key global-map [menu-bar file] nil)
+  (define-key global-map [menu-bar help] nil)
+  (define-key global-map [menu-bar perspective] nil)
+  (define-key global-map [menu-bar options] nil)
+  (define-key global-map [menu-bar edit] nil)
+  (define-key global-map [menu-bar tools] nil)
+  (define-key global-map [menu-bar projectile] nil))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cider-preferred-build-tool (quote shadow-cljs))
  '(custom-safe-themes
    (quote
     ("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(js-indent-level 2)
  '(package-selected-packages
    (quote
-    (doom-themes doom-theme-theme rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby swiper parent-mode projectile request flx highlight transient lv with-editor smartparens iedit anzu evil goto-chg undo-tree erc-terminal-notifier reformatter dash-at-point hydra sesman eval-sexp-fu rust-mode bind-map bind-key yasnippet auto-highlight-symbol packed spinner pythonic f s pkg-info epl ace-window helm avy helm-core async popup godot-gdscript org-category-capture alert log4e gntp skewer-mode simple-httpd lispy zoutline ivy js2-mode haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck magit git-commit ghub treepy graphql erlang eldoc-eval shrink-path json-mode tablist magit-popup docker-tramp json-snatcher json-reformat web-completion-data dash-functional tern restclient know-your-http-well pos-tip inflections edn multiple-cursors paredit peg cider queue clojure-mode markdown-mode anaconda-mode all-the-icons memoize company elixir-mode auto-complete faceup solarized-theme spaceline evil-escape zeal-at-point yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit string-inflection spray solaire-mode smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restclient-helm restart-emacs rainbow-mode rainbow-delimiters racket-mode racer pyvenv pytest pyenv-mode py-isort pug-mode powerline popwin platformio-mode pip-requirements persp-mode pcre2el paradox ov orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-restclient ob-http ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode live-py-mode lispyville linum-relative link-hint key-chord js2-refactor js-doc jinja2-mode indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flycheck-clojure flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav edts edit-indirect dumb-jump doom-modeline dockerfile-mode docker disaster diminish diff-hl define-word deferred cython-mode csv-mode company-web company-tern company-statistics company-restclient company-quickhelp company-c-headers company-ansible company-anaconda column-enforce-mode coffee-mode cmake-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu cargo auto-yasnippet auto-compile arduino-mode ansible-doc ansible alchemist aggressive-indent adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
+    (helm-spotify-plus helm-spotify org-brain helm-jira sql-indent parseedn parseclj a pbcopy osx-clipboard doom-themes doom-theme-theme rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby swiper parent-mode projectile request flx highlight transient lv with-editor smartparens iedit anzu evil goto-chg undo-tree erc-terminal-notifier reformatter dash-at-point hydra sesman eval-sexp-fu rust-mode bind-map bind-key yasnippet auto-highlight-symbol packed spinner pythonic f s pkg-info epl ace-window helm avy helm-core async popup godot-gdscript org-category-capture alert log4e gntp skewer-mode simple-httpd lispy zoutline ivy js2-mode haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck magit git-commit ghub treepy graphql erlang eldoc-eval shrink-path json-mode tablist magit-popup docker-tramp json-snatcher json-reformat web-completion-data dash-functional tern restclient know-your-http-well pos-tip inflections edn multiple-cursors paredit peg cider queue clojure-mode markdown-mode anaconda-mode all-the-icons memoize company elixir-mode auto-complete faceup solarized-theme spaceline evil-escape zeal-at-point yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tagedit string-inflection spray solaire-mode smeargle slim-mode simpleclip shell-pop scss-mode sass-mode restclient-helm restart-emacs rainbow-mode rainbow-delimiters racket-mode racer pyvenv pytest pyenv-mode py-isort pug-mode powerline popwin platformio-mode pip-requirements persp-mode pcre2el paradox ov orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file ob-restclient ob-http ob-elixir neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lua-mode lorem-ipsum livid-mode live-py-mode lispyville linum-relative link-hint key-chord js2-refactor js-doc jinja2-mode indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md geiser fuzzy flycheck-rust flycheck-pos-tip flycheck-mix flycheck-elm flycheck-credo flycheck-clojure flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-social-graph erc-image erc-hl-nicks emmet-mode elm-mode elisp-slime-nav edts edit-indirect dumb-jump doom-modeline dockerfile-mode docker disaster diminish diff-hl define-word deferred cython-mode csv-mode company-web company-tern company-statistics company-restclient company-quickhelp company-c-headers company-ansible company-anaconda column-enforce-mode coffee-mode cmake-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu cargo auto-yasnippet auto-compile arduino-mode ansible-doc ansible alchemist aggressive-indent adaptive-wrap ace-link ace-jump-helm-line ac-ispell)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote
-    ((auto-fill-mode . t)
+    ((cider-ns-refresh-after-fn . "integrant.repl/resume")
+     (cider-ns-refresh-before-fn . "integrant.repl/suspend")
+     (auto-fill-mode . t)
      (flyspell-mode . t)
      (elixir-enable-compilation-checking . t)
      (elixir-enable-compilation-checking)))))

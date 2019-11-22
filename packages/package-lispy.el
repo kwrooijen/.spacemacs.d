@@ -6,6 +6,22 @@
 (add-hook 'clojure-mode-hook #'lispy-mode)
 (add-hook 'hy-mode-hook #'lispy-mode)
 
+
+(defface paren-face
+  '((((class color) (background dark))
+     (:foreground "grey20"))
+    (((class color) (background light))
+     (:foreground "grey80")))
+  "Face used to dim parentheses.")
+
+(add-hook* 'lispy-mode-hook
+           (turn-off-smartparens-mode)
+           (rainbow-delimiters-mode-disable)
+           (global-highlight-parentheses-mode -1)
+           (font-lock-add-keywords nil '((")" . 'paren-face)))
+           (font-lock-add-keywords nil '(("}" . 'paren-face)))
+           (font-lock-add-keywords nil '(("]" . 'paren-face))))
+
 (evil-define-key 'insert lispy-mode-map
   "[" #'lispy-brackets-or-barf)
 
