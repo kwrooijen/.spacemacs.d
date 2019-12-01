@@ -139,6 +139,11 @@
   (require 'functions)
   (require 'keys)
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+  (use-package simpleclip
+    :config
+    (simpleclip-mode 1))
+
   (load-my-packages)
 
   (when (eq system-type 'darwin)
