@@ -2,10 +2,9 @@
 (require 'cider)
 (require 'flycheck-joker)
 (require 'flycheck-clj-kondo)
+(require 'doom-modeline-segments)
 
-(setq cider-auto-jump-to-error nil
-      ;; cider-lein-parameters "trampoline repl :headless :host ::"
-      )
+(setq cider-auto-jump-to-error nil)
 
 (defun clj-hide-namespace ()
   (interactive)
@@ -15,19 +14,30 @@
       (beginning-of-buffer)
       (hs-hide-block))))
 
-;; (eval-after-load 'flycheck '(flycheck-clojure-setup))
+(defun cider-last-test-succeededp ()
+  (zerop
+   (+ (lax-plist-get (cdr cider-test-last-summary) "error")
+      (lax-plist-get (cdr cider-test-last-summary) "fail"))))
 
-;; (eval-after-load 'flycheck
-;;   '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+(doom-modeline-def-segment cider-test-error
+  (doom-modeline--modal-icon "Test status"
+                             (if (cider-last-test-succeededp)
+                                 'compilation-info
+                               'compilation-error)
+                             "Test status"))
 
-;; (add-hook* 'cider-mode-hook
-;;            (setq next-error-function #'flycheck-next-error-function))
+(doom-modeline-def-modeline 'clojure
+  '(bar workspace-name window-number cider-test-error matches buffer-info remote-host buffer-position word-count parrot selection-info)
+  '(objed-state misc-info persp-name battery grip irc mu4e github debug lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker))
 
 (add-hook* 'clojure-mode-hook
-           ;; (add-hook 'before-save-hook
-           ;;           (lambda ()
-           ;;             (when (cider-connected-p)
-           ;;               (cider-format-buffer))) nil 'local)
+           (add-hook 'after-save-hook
+                     (lambda ()
+                       (when (and (cider-connected-p)
+                                  (equal major-mode 'clojure-mode))
+                         (cider-test-run-project-tests nil))) nil 'local)
+           (setq cider-auto-select-test-report-buffer nil)
+           (doom-modeline-set-modeline 'clojure)
            (clj-hide-namespace)
            (flycheck-mode))
 
@@ -47,7 +57,6 @@
 ;;            (figwheel-sidecar.repl-api/start-figwheel!)
 ;;            (figwheel-sidecar.repl-api/cljs-repl)
 ;;            (user/cljs-repl))")
-
 (define-clojure-indent
   (render 1)
   (s/fdef 1)
@@ -56,6 +65,7 @@
 
 (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
  (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
+
 (dolist (checkers '((clj-kondo-clj . clojure-joker)
                    (clj-kondo-cljs . clojurescript-joker)
                    (clj-kondo-cljc . clojure-joker)
