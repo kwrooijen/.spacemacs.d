@@ -79,4 +79,9 @@
  :config
  (require 'flycheck-clj-kondo))
 
+;; (defun special-lispy-minibuffer-eval ()
+;;   "For ClojurScript"
+;;   (interactive)
+;;   (cider-eval-sexp-at-point))
+
 (provide 'package-clojure)
