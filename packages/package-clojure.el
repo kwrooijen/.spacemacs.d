@@ -14,29 +14,15 @@
       (beginning-of-buffer)
       (hs-hide-block))))
 
-(defun cider-last-test-succeededp ()
-  (zerop
-   (+ (lax-plist-get (cdr cider-test-last-summary) "error")
-      (lax-plist-get (cdr cider-test-last-summary) "fail"))))
-
-(doom-modeline-def-segment cider-test-error
-  (doom-modeline--modal-icon "Test status"
-                             (if (cider-last-test-succeededp)
-                                 'compilation-info
-                               'compilation-error)
-                             "Test status"))
-
-(doom-modeline-def-modeline 'clojure
-  '(bar workspace-name window-number cider-test-error matches buffer-info remote-host buffer-position word-count parrot selection-info)
-  '(objed-state misc-info persp-name battery grip irc mu4e github debug lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker))
+(add-hook* 'clojurescript-mode-hook
+           (subword-mode -1)
+           (flycheck-mode)
+           (setq cider-enhanced-cljs-completion-p nil
+                 cider-default-cljs-repl 'shadow))
 
 (add-hook* 'clojure-mode-hook
-           (add-hook 'after-save-hook
-                     (lambda ()
-                       (when (and (cider-connected-p)
-                                  (equal major-mode 'clojure-mode))
-                         (cider-test-run-project-tests nil))) nil 'local)
            (setq cider-auto-select-test-report-buffer nil)
+           (subword-mode -1)
            (doom-modeline-set-modeline 'clojure)
            (clj-hide-namespace)
            (flycheck-mode))
@@ -51,12 +37,6 @@
   (interactive "sEval: ")
   (cider-interactive-eval input))
 
-;; ClojureScript
-;; (setq cider-cljs-lein-repl
-;;       "(do (require 'figwheel-sidecar.repl-api)
-;;            (figwheel-sidecar.repl-api/start-figwheel!)
-;;            (figwheel-sidecar.repl-api/cljs-repl)
-;;            (user/cljs-repl))")
 (define-clojure-indent
   (render 1)
   (s/fdef 1)
