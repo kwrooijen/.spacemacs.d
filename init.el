@@ -5,7 +5,7 @@
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(
+   '(sql
      (auto-completion :variables
                       auto-completion-enable-help-tooltip t)
      (clojure :variables
