@@ -17,6 +17,8 @@
 (add-hook* 'clojurescript-mode-hook
            (subword-mode -1)
            (flycheck-mode)
+           ;; Prevent issue company-mode issue:
+           ;; https://github.com/clojure-emacs/cider/issues/2714
            (setq cider-enhanced-cljs-completion-p nil
                  cider-default-cljs-repl 'shadow))
 

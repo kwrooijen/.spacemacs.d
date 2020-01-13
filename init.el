@@ -51,7 +51,7 @@
                 dotspacemacs-startup-lists '(recents projects)
                 dotspacemacs-startup-recent-list-size 5
                 dotspacemacs-scratch-mode 'emacs-lisp-mode
-                dotspacemacs-themes '(doom-one)
+                dotspacemacs-themes '(doom-spacegrey)
                 dotspacemacs-colorize-cursor-according-to-state t
                 dotspacemacs-default-font '("Fira Mono"
                                             :size 10
@@ -82,7 +82,7 @@
                 dotspacemacs-maximized-at-startup nil
                 dotspacemacs-active-transparency 90
                 dotspacemacs-inactive-transparency 90
-                dotspacemacs-mode-line-unicode-symbols t
+                dotspacemacs-mode-line-unicode-symbols nil
                 dotspacemacs-smooth-scrolling nil
                 dotspacemacs-line-numbers nil
                 dotspacemacs-smartparens-strict-mode nil
